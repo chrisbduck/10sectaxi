@@ -84,10 +84,10 @@ namespace
 				mCurrentGroupName = stripped(lLine.substr(1, lLine.length() - 2));
 				mpCurrentGroup = getGroup(mCurrentGroupName, nullptr);
 				if (mpCurrentGroup != nullptr)
-					printf("Switching to group: %s\n", mCurrentGroupName.c_str());
+					;//printf("Switching to group: %s\n", mCurrentGroupName.c_str());
 				else
 				{
-					printf("Creating group: %s\n", mCurrentGroupName.c_str());
+					//printf("Creating group: %s\n", mCurrentGroupName.c_str());
 					mpCurrentGroup = new SettingsGroup;
 					mGroupMap[mCurrentGroupName] = mpCurrentGroup;
 					continue;
@@ -108,7 +108,7 @@ namespace
 				printf("Invalid setting: \"%s\" = \"%s\"\n", lName.c_str(), lValue.c_str());
 				continue;
 			}
-			printf("Setting \"%s\" to \"%s\"\n", lName.c_str(), lValue.c_str());
+			//printf("Setting \"%s\" to \"%s\"\n", lName.c_str(), lValue.c_str());
 			(*mpCurrentGroup)[lName] = lValue;
 		}
 		
