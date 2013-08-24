@@ -1,7 +1,7 @@
-attribute vec4 vPos;
-uniform mat4 mMat;
+attribute vec4	a_VertPos;
+uniform mat4	u_Matrix;
 
 void main()
 {
-	gl_Position = mMat * vPos;
+	gl_Position = u_Matrix * a_VertPos;
 }

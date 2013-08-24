@@ -118,8 +118,9 @@ void Video::flip()
 		
 		glUseProgram(mShaderProg);
 		
-		GLint lPosID = glGetAttribLocation(mShaderProg, "vPos");
-		GLint lMatID = glGetUniformLocation(mShaderProg, "mMat");
+		GLint lPosID = glGetAttribLocation(mShaderProg, "a_VertPos");
+		GLint lMatID = glGetUniformLocation(mShaderProg, "u_Matrix");
+		GLint lColID = glGetUniformLocation(mShaderProg, "u_Colour");
 		
 		glm::mat4 m(1.0f);	// identity
 		m = glm::translate(m, glm::vec3(-1.0f, 1.0f, 0.0f));
@@ -128,6 +129,9 @@ void Video::flip()
 									1.0f));
 		//m = glm::ortho(0, Settings::getInt("screen/width"), Settings::getInt("screen/height"), 0);
 		glUniformMatrix4fv(lMatID, 1, GL_FALSE, &m[0][0]);
+		
+		float lCol[] = { 0.3f, 0.3f, 1.0f, 1.0f };
+		glUniform4fv(lColID, 1, lCol);
 		
 		glDisable(GL_DEPTH_TEST);
 		
