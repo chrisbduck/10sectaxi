@@ -1,0 +1,19 @@
+Ten-Second Taxi
+---------------
+
+- Driving game, vaguely crazy-taxi-like
+- Pick up passengers automatically (as long as at not *very* high speeds)
+- Passengers all want to get somewhere within ten seconds
+  - Use silly excuses when needed :)
+
+Controls:
+- Left, right, accelerate, brake
+- Handbrake turn
+- Nitro
+
+Power-ups:
+- Hover-taxi - drive over fences and maybe small buildings
+- Boat taxi - drive over water
+- Turbo boost - Knight-Rider-style single jump over stuff
+- Instant reverse - Nonsensical stop and turn around
+
