@@ -104,13 +104,19 @@ void Video::flip()
 		/*static GLfloat lVertices[] = {   0.0f,  0.5f, 0.0f,
 										-0.5f, -0.5f, 0.0f,
 										 0.5f, -0.5f, 0.0f };*/
-		static GLfloat lVertices[] = {   400.0f,  100.0f, 0.0f,
-										 100.0f,  500.0f, 0.0f,
-										 700.0f,  500.0f, 0.0f };
+		/*static GLfloat lVertices[] = {   100.0f,  500.0f, 0.0f,
+										 100.0f,  100.0f, 0.0f,
+										 700.0f,  500.0f, 0.0f,
+										 700.0f,  100.0f, 0.0f };*/
+		static GLfloat lVertices[] = {	-0.5f,  0.5f, 0.0f,
+										-0.5f, -0.5f, 0.0f,
+										 0.5f,  0.5f, 0.0f,
+										 0.5f, -0.5f, 0.0f };
 		
-		static GLfloat lVertUVs[] = { 0.5f, 0.0f,
-									  0.0f, 1.0f,
-									  1.0f, 1.0f };
+		static GLfloat lVertUVs[] = { 0.0f, 1.0f,
+									  0.0f, 0.0f,
+									  1.0f, 1.0f,
+									  1.0f, 0.0f };
 		
 		static bool sInit = true;
 		static GLuint sBufferIDs[2] = { 0, 0 };
@@ -136,10 +142,20 @@ void Video::flip()
 		GLint lColID = glGetUniformLocation(mShaderProg, "u_Colour");
 		GLint lSmpID = glGetUniformLocation(mShaderProg, "u_Texture");
 		
+		float lScaleX = Settings::getFloat("test/width");
+		float lScaleY = Settings::getFloat("test/height");
+		float lPosX = Settings::getFloat("test/x");
+		float lPosY = Settings::getFloat("test/y");
+		
+		float lRescalerX = 2.0f / Settings::getFloat("screen/width");
+		float lRescalerY = -2.0f / Settings::getFloat("screen/height");
+		
 		glm::mat4 m(1.0f);	// identity
-		m = glm::translate(m, glm::vec3(-1.0f, 1.0f, 0.0f));
-		m = glm::scale(m, glm::vec3(2.0f / Settings::getFloat("screen/width"),
-									-2.0f / Settings::getFloat("screen/height"),
+		m = glm::translate(m, glm::vec3(lPosX * lRescalerX - 1.0f,
+										lPosY * lRescalerY + 1.0f,
+										0.0f));
+		m = glm::scale(m, glm::vec3(lScaleX * lRescalerX,
+									lScaleY * lRescalerY,
 									1.0f));
 		//m = glm::ortho(0, Settings::getInt("screen/width"), Settings::getInt("screen/height"), 0);
 		glUniformMatrix4fv(lMatID, 1, GL_FALSE, &m[0][0]);
@@ -176,7 +192,7 @@ void Video::flip()
 		glBindBuffer(GL_ARRAY_BUFFER, srVertBufferID);
 		glVertexAttribPointer(lPosID, 3, GL_FLOAT, GL_FALSE, 0, 0);
 		glEnableVertexAttribArray(lPosID);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		glDisableVertexAttribArray(lPosID);
 		
 		if (lpSurf != nullptr)
