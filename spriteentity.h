@@ -9,9 +9,11 @@
 
 #include "entity.h"
 
+#include <GLES2/gl2.h>
+
 //------------------------------------------------------------------------------
 
-struct SDL_Surface;
+class Texture;
 
 //------------------------------------------------------------------------------
 
@@ -24,10 +26,25 @@ public:
 	
 	virtual void render() const;
 	
-	void setTexture(SDL_Surface* lpTexture);
+	void setTexture(Texture* lpTexture);
 	
 private:
-	SDL_Surface* mpTexture;
+	
+	static void staticInit();
+	
+	
+	Texture* mpTexture;
+	
+	// All sprites are rendered using a common set of vertex positions and UVs, and a set shader programme
+	static bool msStaticInitDone;
+	static GLfloat msVertPosData[];
+	static GLfloat msVertUVData[];
+	static GLuint msVertPosBufferID;
+	static GLuint msVertUVBufferID;
+	static GLuint msShaderProg;
+	static GLuint msPosAttributeID, msUVAttributeID;
+	static GLuint msMatUniformID, msColUniformID, msTexUniformID;
+	static float msScreenScaleX, msScreenScaleY;
 };
 
 //------------------------------------------------------------------------------

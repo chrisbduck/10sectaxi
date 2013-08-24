@@ -14,9 +14,9 @@
 
 //------------------------------------------------------------------------------
 
-struct SDL_Surface;
 class Music;
 class Sound;
+class Texture;
 
 //------------------------------------------------------------------------------
 
@@ -36,7 +36,7 @@ public:
 	enum PageUpdateType { UpdatePage, DoNotUpdatePage };
 	void toggleMusic(PageUpdateType lUpdate);
 	
-	SDL_Surface* getBackgroundTexture() const { return mpBackground; }
+	Texture* getBackgroundTexture() const { return mpBackground; }
 	
 private:
 	
@@ -61,8 +61,8 @@ private:
 	Music* mpMusic;
 	Sound* mpTestSound;
 	
-	SDL_Surface* mpBackground;
-	SDL_Surface* mpGuard;
+	Texture* mpBackground;
+	Texture* mpGuard;
 	std::vector<float> mvGuardX;
 	std::vector<float> mvGuardY;
 	std::vector<float> mvGuardVX;

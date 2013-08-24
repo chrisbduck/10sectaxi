@@ -9,6 +9,7 @@
 
 #include <GLES2/gl2.h>
 #include <string>
+#include <unordered_set>
 
 //------------------------------------------------------------------------------
 
@@ -30,15 +31,19 @@ public:
 	
 	SDL_Surface* getDisplaySurface() const { return mpDisplaySurface; }
 	
+	// There's no need to delete programmes built with these; the video object will do so on shut down
+	GLuint buildShaderProg(const char* lpVertShaderSrc, const char* lpFragShaderSrc);
+	GLuint buildShaderProgFromFiles(const std::string& lrVertShaderFileName, const std::string& lrFragShaderFileName);
+	
 private:
 	
 	enum ShaderType { kVertexShader, kFragmentShader };
 	GLuint loadShader(const char* lpSourceText, ShaderType lType);
-	GLuint buildProg(const char* lpVertShaderSrc, const char* lpFragShaderSrc);
 	
 	bool			mInitialised;
 	SDL_Surface*	mpDisplaySurface;
-	GLuint			mShaderProg;
+	
+	std::unordered_set<GLuint> mShaderProgSet;
 };
 
 extern Video gVideo;

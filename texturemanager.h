@@ -7,12 +7,14 @@
 #ifndef TEXTUREMANAGER_H
 #define TEXTUREMANAGER_H
 
+#include <GLES2/gl2.h>
 #include <string>
 #include <unordered_map>
 
 //------------------------------------------------------------------------------
 
 struct SDL_Surface;
+class Texture;
 
 //------------------------------------------------------------------------------
 
@@ -25,13 +27,31 @@ public:
 	void init();
 	void shutDown();
 	
-	SDL_Surface* load(const std::string& lrFileName);
+	Texture* load(const std::string& lrFileName);
 	
 private:
-	std::unordered_map<std::string, SDL_Surface*> mTextures;
+	std::unordered_map<std::string, Texture*> mTextures;
 };
 
 extern TextureManager gTextureManager;
+
+//------------------------------------------------------------------------------
+
+class Texture
+{
+public:
+	Texture(SDL_Surface* lpSurface);
+	~Texture();
+	
+	void activate(GLenum lTextureStage = GL_TEXTURE0);
+	
+	int width() const;
+	int height() const;
+	
+private:
+	SDL_Surface*	mpSurface;
+	GLuint			mTexID;
+};
 
 //------------------------------------------------------------------------------
 
