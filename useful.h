@@ -57,6 +57,8 @@ float getFloatParam(const std::vector<std::string>& lrParamList, int lParamIndex
 
 void traceDirContents(const std::string& lrDirName);
 
+std::string getFileContents(const std::string& lrFileName);
+
 bool floatApproxEquals(float lVal1, float lVal2);
 
 // Set the loop factor to a value in [0, 1] to cycle the gradient start position

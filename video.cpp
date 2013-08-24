@@ -6,6 +6,7 @@
 
 #include "video.h"
 
+#include "settings.h"
 #include "useful.h"
 #include <GLES2/gl2.h>
 #include <SDL/SDL_compat.h>
@@ -34,20 +35,6 @@ Video::~Video()
 
 //------------------------------------------------------------------------------
 
-static const char* const kpVertexShaderSource =
-		"attribute vec4 vPos;\n"
-		"void main()\n"
-		"{\n"
-		"	gl_Position = vPos;\n"
-		"}\n";
-
-static const char* const kpFragmentShaderSourface =
-		"precision mediump float;\n"
-		"void main()\n"
-		"{\n"
-		"	gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);\n"
-		"}\n";
-
 bool Video::init(int lDisplayWidth, int lDisplayHeight)
 {
 	ASSERT(!mInitialised);
@@ -62,7 +49,13 @@ bool Video::init(int lDisplayWidth, int lDisplayHeight)
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glViewport(0, 0, lDisplayWidth, lDisplayHeight);
 	
-	mShaderProg = buildProg(kpVertexShaderSource, kpFragmentShaderSourface);
+	std::string lVertShaderFileName = "data/shaders/" + Settings::getString("shader/vertex");
+	std::string lFragShaderFileName = "data/shaders/" + Settings::getString("shader/fragment");
+	
+	std::string lVertShaderSrc = getFileContents(lVertShaderFileName);
+	std::string lFragShaderSrc = getFileContents(lFragShaderFileName);
+	
+	mShaderProg = buildProg(lVertShaderSrc.c_str(), lFragShaderSrc.c_str());
 	
 	//SDL_FillRect(mpDisplaySurface, nullptr, 0xFF808080);
 	//SDL_Flip(mpDisplaySurface);

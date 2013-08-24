@@ -10,6 +10,7 @@
 #include <sys/types.h>
 #include <cmath>
 #include <dirent.h>
+#include <fstream>
 
 //------------------------------------------------------------------------------
 // String manipulation
@@ -124,6 +125,26 @@ void traceDirContents(const std::string& lrDirName)
 		puts(pEntry->d_name);
 	}
 	closedir(pDir);
+}
+
+//------------------------------------------------------------------------------
+
+std::string getFileContents(const std::string &lrFileName)
+{
+	std::ifstream lFile(lrFileName);
+	if (!lFile.is_open())
+	{
+		printf("Failed to read file \"%s\"\n", lrFileName.c_str());
+		return std::string();
+	}
+	std::string lContents;
+	while (!lFile.eof())
+	{
+		char lLineBuf[512];
+		lFile.getline(lLineBuf, sizeof(lLineBuf));
+		lContents += lLineBuf;
+	}
+	return lContents;
 }
 
 //------------------------------------------------------------------------------

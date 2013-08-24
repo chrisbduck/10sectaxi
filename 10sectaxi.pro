@@ -39,7 +39,9 @@ OTHER_FILES += \
 	Makefile \
 	build/10sectaxi.html \
 	data/settings.cfg \
-    ideas.txt
+    ideas.txt \
+    data/shaders/default.vsh \
+    data/shaders/default.frag
 
 HEADERS += \
 	app.h \
