@@ -12,6 +12,10 @@
 #include <SDL/SDL_compat.h>
 #include <SDL/SDL_surface.h>
 
+#define GLM_FORCE_RADIANS
+#include "glm/glm.hpp"
+#include "glm/gtc/matrix_transform.hpp"
+
 //------------------------------------------------------------------------------
 
 Video gVideo;
@@ -95,9 +99,12 @@ void Video::flip()
 {
 	if (mShaderProg != 0)
 	{
-		static GLfloat lVertices[] = {  0.0f,  0.5f, 0.0f,
-								-0.5f, -0.5f, 0.0f,
-								 0.5f, -0.5f, 0.0f };
+		/*static GLfloat lVertices[] = {   0.0f,  0.5f, 0.0f,
+										-0.5f, -0.5f, 0.0f,
+										 0.5f, -0.5f, 0.0f };*/
+		static GLfloat lVertices[] = {   400.0f,    0.0f, 0.0f,
+										   0.0f,  600.0f, 0.0f,
+										 800.0f,  600.0f, 0.0f };
 		
 		static bool sInit = true;
 		static GLuint sBufferID = 0;
@@ -111,11 +118,24 @@ void Video::flip()
 		
 		glUseProgram(mShaderProg);
 		
+		GLint lPosID = glGetAttribLocation(mShaderProg, "vPos");
+		GLint lMatID = glGetUniformLocation(mShaderProg, "mMat");
+		
+		glm::mat4 m(1.0f);	// identity
+		m = glm::translate(m, glm::vec3(-1.0f, 1.0f, 0.0f));
+		m = glm::scale(m, glm::vec3(2.0f / Settings::getFloat("screen/width"),
+									-2.0f / Settings::getFloat("screen/height"),
+									1.0f));
+		//m = glm::ortho(0, Settings::getInt("screen/width"), Settings::getInt("screen/height"), 0);
+		glUniformMatrix4fv(lMatID, 1, GL_FALSE, &m[0][0]);
+		
+		glDisable(GL_DEPTH_TEST);
+		
 		glBindBuffer(GL_ARRAY_BUFFER, sBufferID);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(lPosID, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(lPosID);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
-		glDisableVertexAttribArray(0);
+		glDisableVertexAttribArray(lPosID);
 	}
 	
 	//SDL_Flip(mpDisplaySurface);

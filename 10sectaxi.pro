@@ -14,7 +14,8 @@ CONFIG -= app_bundle
 INCLUDEPATH += \
 	include \
 	include/libc \
-	include/libcxx
+	include/libcxx \
+	../glm
 
 TEMPLATE = app
 

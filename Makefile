@@ -1,4 +1,4 @@
-CXXFLAGS := -Wall -std=c++11 -s DISABLE_EXCEPTION_CATCHING=1
+CXXFLAGS := -Wall -std=c++11 -s DISABLE_EXCEPTION_CATCHING=1 -I../glm
 #CXXFLAGS += -s EXCEPTION_DEBUG=1
 
 # Default to make all
