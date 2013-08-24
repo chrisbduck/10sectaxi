@@ -19,6 +19,7 @@ CarEntity::CarEntity(float lX, float lY, const std::string& lrColour) :
 	mAccelCtrl(0.0f)
 {
 	setTexture(gTextureManager.load("data/tex/" + lrColour + "-car.png"));
+	setRotationStartsFromUp(true);
 }
 
 //------------------------------------------------------------------------------
@@ -41,7 +42,10 @@ void CarEntity::update(float lTimeDeltaSec)
 {
 	float lVelMag, lVelAngleRad;
 	getPolarFromRect(velX(), velY(), &lVelMag, &lVelAngleRad);
-	//printf("mag = %f; angle = %f\n", lVelMag, lVelAngleRad);
+	printf("mag = %f; angle = %f\n", lVelMag, lVelAngleRad);
+	
+	//if (floatApproxEquals(lVelMag, 0.0f))
+	//	lVelAngleRad = rotation();			// use previous rotation
 	
 	bool lAdjustedVel = false;
 	
@@ -83,6 +87,7 @@ void CarEntity::update(float lTimeDeltaSec)
 		float lVelX, lVelY;
 		getRectFromPolar(lVelMag, lVelAngleRad, &lVelX, &lVelY);
 		setVel(lVelX, lVelY);
+		setRotation(lVelAngleRad);
 	}
 	
 	SpriteEntity::update(lTimeDeltaSec);

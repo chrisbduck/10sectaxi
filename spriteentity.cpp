@@ -46,7 +46,9 @@ float SpriteEntity::msScreenScaleX = 1.0f, SpriteEntity::msScreenScaleY = 1.0f;
 
 SpriteEntity::SpriteEntity(float lX, float lY) :
 	Entity(lX, lY),
-	mpTexture(nullptr)
+	mpTexture(nullptr),
+	mRotationRad(0.0f),
+	mRotationStartsFromUp(false)
 {
 	if (!msStaticInitDone)
 		staticInit();
@@ -113,11 +115,11 @@ void SpriteEntity::render() const
 	
 	// Set up the transformation matrix
 	
-	float lRotRad = 0.0f;//Settings::getFloat("test/rotation") * M_PI / 180.0f;
+	float lFixedRotationRad = mRotationStartsFromUp ? (-M_PI_OVER_2 - mRotationRad) : mRotationRad;
 	
 	glm::mat4 lTransform(1.0f);		// identity
 	lTransform = glm::translate(lTransform, glm::vec3(x() * msScreenScaleX - 1.0f, y() * msScreenScaleY + 1.0f, 0.0f));
-	lTransform = glm::rotate(lTransform, lRotRad, glm::vec3(0.0f, 0.0f, 1.0f));
+	lTransform = glm::rotate(lTransform, lFixedRotationRad, glm::vec3(0.0f, 0.0f, 1.0f));
 	lTransform = glm::scale(lTransform, glm::vec3(width() * msScreenScaleX, height() * msScreenScaleY, 1.0f));
 	glUniformMatrix4fv(msMatUniformID, 1, GL_FALSE, &lTransform[0][0]);
 	

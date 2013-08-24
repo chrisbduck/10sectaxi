@@ -28,12 +28,20 @@ public:
 	
 	void setTexture(Texture* lpTexture);
 	
+	float rotation() const { return mRotationRad; }
+	void setRotation(float lRotation) { mRotationRad = lRotation; }
+	
+protected:
+	void setRotationStartsFromUp(bool lEnabled) { mRotationStartsFromUp = lEnabled; }	// for car sprite, etc
+	
 private:
 	
 	static void staticInit();
 	
 	
 	Texture* mpTexture;
+	float mRotationRad;
+	bool mRotationStartsFromUp;
 	
 	// All sprites are rendered using a common set of vertex positions and UVs, and a set shader programme
 	static bool msStaticInitDone;
