@@ -128,6 +128,14 @@ void traceDirContents(const std::string& lrDirName)
 
 //------------------------------------------------------------------------------
 
+bool floatApproxEquals(float lVal1, float lVal2)
+{
+	static const float kEpsilon = 1.0e-6f;
+	return lVal1 - kEpsilon < lVal2 && lVal2 < lVal1 + kEpsilon;
+}
+
+//------------------------------------------------------------------------------
+
 void setSurfaceToGradient(SDL_Surface* lpSurface, float lLoopFactor)
 {
 	SDL_LockSurface(lpSurface);
@@ -146,6 +154,49 @@ void setSurfaceToGradient(SDL_Surface* lpSurface, float lLoopFactor)
 	}
 	
 	SDL_UnlockSurface(lpSurface);
+}
+
+//------------------------------------------------------------------------------
+
+void getPolarFromRect(float lX, float lY, float *lpMagOut, float *lpAngleRadOut)
+{
+	*lpMagOut = sqrtf(lX * lX + lY * lY);
+	
+	float lAngleRad;
+	bool lXZero = floatApproxEquals(lX, 0.0f);
+	bool lYZero = floatApproxEquals(lY, 0.0f);
+	if (lXZero || lYZero)
+	{
+		if (lXZero && lYZero)
+			lAngleRad = 0.0f;	// not sure what else to do
+		else if (lXZero)
+			lAngleRad = (lY > 0.0f) ? M_PI_OVER_2 : -M_PI_OVER_2;
+		else	// lYZero
+			lAngleRad = (lX > 0.0f) ? 0.0f : M_PI;
+	}
+	else
+	{
+		lAngleRad = atanf(lY / lX);
+		// x < 0, y > 0: pi + atan
+		// x < 0, y < 0: -pi + atan
+		if (lX < 0.0f)
+		{
+			if (lY > 0.0f)
+				lAngleRad += M_PI;
+			else
+				lAngleRad -= M_PI;
+		}
+	}
+	
+	*lpAngleRadOut = lAngleRad;
+}
+
+//------------------------------------------------------------------------------
+
+void getRectFromPolar(float lMag, float lAngleRad, float *lpXOut, float *lpYOut)
+{
+	*lpXOut = cosf(lAngleRad) * lMag;
+	*lpYOut = sinf(lAngleRad) * lMag;
 }
 
 //------------------------------------------------------------------------------

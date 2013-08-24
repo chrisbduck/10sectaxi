@@ -12,6 +12,7 @@
 #include "carentity.h"
 #include "entitymanager.h"
 #include "fontmanager.h"
+#include "playercarentity.h"
 #include "settings.h"
 #include "spriteentity.h"
 #include "texturemanager.h"
@@ -149,10 +150,10 @@ bool Application::init()
 		lpEntity->setVelY((30.0f + 90.0f * emscripten_random()) * (emscripten_random() >= 0.5f ? 1.0f : -1.0f));
 	}*/
 	
-	CarEntity* lpCar = new CarEntity(50.0f, 50.0f, "red");
-	gEntityManager.registerEntity(lpCar);
-	CarEntity* lpCar2 = new CarEntity(300.0f, 300.0f, "yellow");
-	gEntityManager.registerEntity(lpCar2);
+	//CarEntity* lpCar = new CarEntity(50.0f, 50.0f, "red");
+	//gEntityManager.registerEntity(lpCar);
+	PlayerCarEntity* lpPlayer = new PlayerCarEntity(300.0f, 300.0f);
+	gEntityManager.registerEntity(lpPlayer);
 	
 	// Set up the times immediately before starting the main loop
 	mStartTimeSec = emscripten_get_now() * 0.001f;
@@ -189,7 +190,7 @@ void Application::processEvents()
 
 void Application::update(float lTimeDeltaSec)
 {
-	static float sNextTraceSec = mStartTimeSec;
+	/*static float sNextTraceSec = mStartTimeSec;
 	static int sIterations = 0;
 	++sIterations;
 	if (mCurrentTimeSec >= sNextTraceSec)
@@ -204,7 +205,7 @@ void Application::update(float lTimeDeltaSec)
 			quit();
 			return;
 		}
-	}
+	}*/
 	
 	gEntityManager.update(lTimeDeltaSec);
 }

@@ -67,12 +67,15 @@ namespace
 		{
 			lSrc.getline(lLineBuf, sizeof(lLineBuf));
 			std::string lLine(lLineBuf);
+			
+			// Remove any comment
+			size_t lCommentPos = lLine.find('#');
+			if (lCommentPos != std::string::npos)
+				lLine.erase(lCommentPos, lLine.length());
+			
+			// Strip what's left, and skip the line if it's now empty
 			strip(lLine);
 			if (lLine.empty())
-				continue;
-			
-			// Comment
-			if (*lLine.begin() == '#')
 				continue;
 			
 			// Group

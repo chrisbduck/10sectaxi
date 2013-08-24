@@ -42,6 +42,7 @@ public:
 	float velY() const { return mVelY; }
 	void setVelX(float lVelX) { mVelX = lVelX; }
 	void setVelY(float lVelY) { mVelY = lVelY; }
+	void setVel(float lVelX, float lVelY) { mVelX = lVelX; mVelY = lVelY; }
 	
 	float width() const			{ return mWidth; }
 	float height() const		{ return mHeight; }

@@ -31,7 +31,9 @@ SOURCES += \
 	entity.cpp \
 	camera.cpp \
 	spriteentity.cpp \
-    carentity.cpp
+    carentity.cpp \
+    playercarentity.cpp \
+    video.cpp
 
 OTHER_FILES += \
 	Makefile \
@@ -51,4 +53,6 @@ HEADERS += \
 	entity.h \
 	camera.h \
 	spriteentity.h \
-    carentity.h
+    carentity.h \
+    playercarentity.h \
+    video.h
