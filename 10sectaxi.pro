@@ -31,10 +31,11 @@ SOURCES += \
 	entity.cpp \
 	camera.cpp \
 	spriteentity.cpp \
+    carentity.cpp
 
 OTHER_FILES += \
 	Makefile \
-	10sectaxi.html \
+	build/10sectaxi.html \
 	data/settings.cfg \
     ideas.txt
 
@@ -50,3 +51,4 @@ HEADERS += \
 	entity.h \
 	camera.h \
 	spriteentity.h \
+    carentity.h

@@ -9,6 +9,7 @@
 #include "audiomanager.h"
 #include "boundedentity.h"
 #include "camera.h"
+#include "carentity.h"
 #include "entitymanager.h"
 #include "fontmanager.h"
 #include "settings.h"
@@ -133,12 +134,12 @@ bool Application::init()
 	mpBackground = gTextureManager.load("data/grass.jpg");
 	mpGuard = gTextureManager.load("data/guard.png");
 	
-	SpriteEntity* lpBackground = new SpriteEntity(float(kDisplayWidth) * 0.5f + 50.0f, float(kDisplayHeight) * 0.5f);
+	SpriteEntity* lpBackground = new SpriteEntity(float(kDisplayWidth) * 0.5f, float(kDisplayHeight) * 0.5f);
 	lpBackground->setName("background");
 	lpBackground->setTexture(gTextureManager.load("data/grass.jpg"));
 	gEntityManager.registerEntity(lpBackground);	// must be first
 	
-	const int kNumGuards = Settings::getInt("num_guards");
+	/*const int kNumGuards = Settings::getInt("num_guards");
 	for (int lGuardIndex = 0; lGuardIndex < kNumGuards; ++lGuardIndex)
 	{
 		BoundedEntity* lpEntity = new BoundedEntity(emscripten_random() * 700.0f + 50.0f,
@@ -146,7 +147,12 @@ bool Application::init()
 		gEntityManager.registerEntity(lpEntity);
 		lpEntity->setVelX((30.0f + 90.0f * emscripten_random()) * (emscripten_random() >= 0.5f ? 1.0f : -1.0f));
 		lpEntity->setVelY((30.0f + 90.0f * emscripten_random()) * (emscripten_random() >= 0.5f ? 1.0f : -1.0f));
-	}
+	}*/
+	
+	CarEntity* lpCar = new CarEntity(50.0f, 50.0f, "red");
+	gEntityManager.registerEntity(lpCar);
+	CarEntity* lpCar2 = new CarEntity(300.0f, 300.0f, "yellow");
+	gEntityManager.registerEntity(lpCar2);
 	
 	// Set up the times immediately before starting the main loop
 	mStartTimeSec = emscripten_get_now() * 0.001f;
@@ -199,8 +205,6 @@ void Application::update(float lTimeDeltaSec)
 			return;
 		}
 	}
-	
-	gpCamera->setPos(gpCamera->x() - 60.0f * lTimeDeltaSec, gpCamera->y());
 	
 	gEntityManager.update(lTimeDeltaSec);
 }

@@ -22,7 +22,7 @@ ALLTARGETS := $(TARGETS)
 # Data and related
 
 DATADIR := data
-PRELOAD_FILE := $(BUILDDIR)/$(PROJECT).data
+PRELOAD_FILE := $(BUILDDIR)/10sectaxi.data
 PRELOAD_SCRIPT := $(BUILDDIR)/preload.js
 $(PRELOAD_FILE) $(PRELOAD_SCRIPT): $(DATADIR)/*
 	python /opt/emscripten/tools/file_packager.py $(PRELOAD_FILE) --preload $(DATADIR) --js-output=$(PRELOAD_SCRIPT) \
