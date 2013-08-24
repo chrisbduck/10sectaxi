@@ -6,9 +6,9 @@
 
 #include "spriteentity.h"
 
-#include "app.h"
 #include "camera.h"
 #include "useful.h"
+#include "video.h"
 
 #include <SDL/SDL_surface.h>
 
@@ -45,7 +45,7 @@ void SpriteEntity::render() const
 	
 	//printf("Rect of \"%s\": (%d, %d), %d x %d\n", name().c_str(), lRect.x, lRect.y, lRect.w, lRect.h);
 	
-	SDL_BlitSurface(mpTexture, nullptr, gApplication.getDisplaySurface(), &lRect);
+	SDL_BlitSurface(mpTexture, nullptr, gVideo.getDisplaySurface(), &lRect);
 }
 
 //------------------------------------------------------------------------------

@@ -17,6 +17,7 @@
 #include "spriteentity.h"
 #include "texturemanager.h"
 #include "useful.h"
+#include "video.h"
 
 #include <emscripten/emscripten.h>
 #include <SDL/SDL.h>
@@ -46,8 +47,7 @@ Application::Application(const std::vector<std::string> &lrArgs) :
 	mStartTimeSec(0.0f),
 	mCurrentTimeSec(0.0f),
 	mQuit(false),
-	mpMusic(nullptr),
-	mpDisplaySurface(nullptr)
+	mpMusic(nullptr)
 {
 	ASSERT(msInstance == nullptr);
 	msInstance = this;
@@ -70,12 +70,8 @@ Application::~Application()
 	gAudioManager.shutDown();
 	gFontManager.shutDown();
 	gTextureManager.shutDown();
+	gVideo.shutDown();
 	
-	if (mpDisplaySurface != nullptr)
-	{
-		SDL_FreeSurface(mpDisplaySurface);
-		mpDisplaySurface = nullptr;
-	}
 	SDL_Quit();
 }
 
@@ -102,19 +98,12 @@ bool Application::init()
 	
 	const int kDisplayWidth = Settings::getInt("screen/width");
 	const int kDisplayHeight = Settings::getInt("screen/height");
-	mpDisplaySurface = SDL_SetVideoMode(kDisplayWidth, kDisplayHeight, 32, SDL_HWSURFACE | SDL_DOUBLEBUF);
-	if (mpDisplaySurface == nullptr)
-	{
-		printf("Failed to set SDL video mode %dx%dx32\n", kDisplayWidth, kDisplayHeight);
+	if (!gVideo.init(kDisplayWidth, kDisplayHeight))
 		return false;
-	}
-	
-	SDL_FillRect(mpDisplaySurface, nullptr, 0xFF000000);
-	SDL_Flip(mpDisplaySurface);
 	
 	gTextureManager.init();
 	
-	if (!gFontManager.init(mpDisplaySurface))
+	if (!gFontManager.init(gVideo.getDisplaySurface()))
 		return false;
 	
 	gEntityManager.init();
@@ -139,16 +128,6 @@ bool Application::init()
 	lpBackground->setName("background");
 	lpBackground->setTexture(gTextureManager.load("data/grass.jpg"));
 	gEntityManager.registerEntity(lpBackground);	// must be first
-	
-	/*const int kNumGuards = Settings::getInt("num_guards");
-	for (int lGuardIndex = 0; lGuardIndex < kNumGuards; ++lGuardIndex)
-	{
-		BoundedEntity* lpEntity = new BoundedEntity(emscripten_random() * 700.0f + 50.0f,
-													emscripten_random() * 500.0f + 50.0f);
-		gEntityManager.registerEntity(lpEntity);
-		lpEntity->setVelX((30.0f + 90.0f * emscripten_random()) * (emscripten_random() >= 0.5f ? 1.0f : -1.0f));
-		lpEntity->setVelY((30.0f + 90.0f * emscripten_random()) * (emscripten_random() >= 0.5f ? 1.0f : -1.0f));
-	}*/
 	
 	//CarEntity* lpCar = new CarEntity(50.0f, 50.0f, "red");
 	//gEntityManager.registerEntity(lpCar);
@@ -214,14 +193,16 @@ void Application::update(float lTimeDeltaSec)
 
 void Application::render() const
 {
-	//SDL_BlitSurface(mpBackground, nullptr, mpDisplaySurface, nullptr);
-	SDL_FillRect(mpDisplaySurface, nullptr, 0xFF000000);
+	//SDL_BlitSurface(mpBackground, nullptr, gVideo.getDisplaySurface(), nullptr);
+	//SDL_FillRect(gVideo.getDisplaySurface(), nullptr, 0xFF000000);
+	
+	gVideo.clear();
 	
 	gEntityManager.render();
 	
 	gFontManager.render("Hello everyone", 50, 50, { 0xFF, 0x80, 0, 0xFF });
 	
-	SDL_Flip(mpDisplaySurface);
+	gVideo.flip();
 }
 
 //------------------------------------------------------------------------------
@@ -267,13 +248,6 @@ int Application::run()
 void Application::quit()
 {
 	mQuit = true;
-}
-
-//------------------------------------------------------------------------------
-
-SDL_Surface* Application::getDisplaySurface() const
-{
-	return mpDisplaySurface;
 }
 
 //------------------------------------------------------------------------------

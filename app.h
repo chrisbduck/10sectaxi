@@ -32,7 +32,6 @@ public:
 	void quit();	// sets a quit flag to be processed on the next update
 	
 	float getCurrentTimeMS() const;
-	SDL_Surface* getDisplaySurface() const;
 	
 	enum PageUpdateType { UpdatePage, DoNotUpdatePage };
 	void toggleMusic(PageUpdateType lUpdate);
@@ -60,7 +59,6 @@ private:
 	Music* mpMusic;
 	Sound* mpTestSound;
 	
-	SDL_Surface* mpDisplaySurface;
 	SDL_Surface* mpBackground;
 	SDL_Surface* mpGuard;
 	std::vector<float> mvGuardX;
