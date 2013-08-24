@@ -59,13 +59,16 @@ void traceDirContents(const std::string& lrDirName);
 
 std::string getFileContents(const std::string& lrFileName);
 
+float lerp(float lFactor, float lVal1, float lVal2);
+
 bool floatApproxEquals(float lVal1, float lVal2);
 
 // Set the loop factor to a value in [0, 1] to cycle the gradient start position
 void setSurfaceToGradient(SDL_Surface* lpSurface, float lLoopFactor);
 
-template <typename Type> Type min(Type lVal1, Type lVal2) { return lVal1 < lVal2 ? lVal1 : lVal2; }
-template <typename Type> Type max(Type lVal1, Type lVal2) { return lVal1 > lVal2 ? lVal1 : lVal2; }
+template <typename Type> Type min(Type lVal1, Type lVal2)				{ return lVal1 < lVal2 ? lVal1 : lVal2; }
+template <typename Type> Type max(Type lVal1, Type lVal2)				{ return lVal1 > lVal2 ? lVal1 : lVal2; }
+template <typename Type> Type clamp(Type lVal, Type lMin, Type lMax)	{ return max(lMin, min(lVal, lMax)); }
 
 void getPolarFromRect(float lX, float lY, float* lpMagOut, float* lpAngleRadOut);
 void getRectFromPolar(float lMag, float lAngleRad, float* lpXOut, float* lpYOut);

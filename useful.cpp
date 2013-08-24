@@ -149,6 +149,14 @@ std::string getFileContents(const std::string &lrFileName)
 
 //------------------------------------------------------------------------------
 
+float lerp(float lFactor, float lVal1, float lVal2)
+{
+	lFactor = clamp(lFactor, 0.0f, 1.0f);
+	return lVal1 + (lVal2 - lVal1) * lFactor;
+}
+
+//------------------------------------------------------------------------------
+
 bool floatApproxEquals(float lVal1, float lVal2)
 {
 	static const float kEpsilon = 1.0e-6f;
