@@ -80,6 +80,8 @@ void FontManager::render(const char* lpText, int lX, int lY, SDL_Colour lCol)
 {
 	ASSERT(mInitialised);
 	
+	return;	// HACK
+	
 	SDL_Surface* lpRenderedFontSurface = TTF_RenderText_Blended(mpDefaultFont, lpText, lCol);
 	
 	SDL_Rect lTargetRect = { lX, lY, lpRenderedFontSurface->w, lpRenderedFontSurface->h };
