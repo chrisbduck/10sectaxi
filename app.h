@@ -36,6 +36,8 @@ public:
 	enum PageUpdateType { UpdatePage, DoNotUpdatePage };
 	void toggleMusic(PageUpdateType lUpdate);
 	
+	SDL_Surface* getBackgroundTexture() const { return mpBackground; }
+	
 private:
 	
 	void processEvents();

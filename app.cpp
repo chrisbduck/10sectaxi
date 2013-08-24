@@ -121,7 +121,8 @@ bool Application::init()
 	//mpTestSound = gAudioManager.loadSound("data/test_sfx.ogg");
 	//mpTestSound->play();
 	
-	mpBackground = gTextureManager.load("data/grass.jpg");
+	//mpBackground = gTextureManager.load("data/grass.jpg");
+	mpBackground = gTextureManager.load(Settings::getString("screen/background_texture"));
 	mpGuard = gTextureManager.load("data/guard.png");
 	
 	SpriteEntity* lpBackground = new SpriteEntity(float(kDisplayWidth) * 0.5f, float(kDisplayHeight) * 0.5f);

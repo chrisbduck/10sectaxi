@@ -95,6 +95,8 @@ void Video::clear()
 
 //------------------------------------------------------------------------------
 
+#include "app.h"
+
 void Video::flip()
 {
 	if (mShaderProg != 0)
@@ -102,25 +104,37 @@ void Video::flip()
 		/*static GLfloat lVertices[] = {   0.0f,  0.5f, 0.0f,
 										-0.5f, -0.5f, 0.0f,
 										 0.5f, -0.5f, 0.0f };*/
-		static GLfloat lVertices[] = {   400.0f,    0.0f, 0.0f,
-										   0.0f,  600.0f, 0.0f,
-										 800.0f,  600.0f, 0.0f };
+		static GLfloat lVertices[] = {   400.0f,  100.0f, 0.0f,
+										 100.0f,  500.0f, 0.0f,
+										 700.0f,  500.0f, 0.0f };
+		
+		static GLfloat lVertUVs[] = { 0.5f, 0.0f,
+									  0.0f, 1.0f,
+									  1.0f, 1.0f };
 		
 		static bool sInit = true;
-		static GLuint sBufferID = 0;
+		static GLuint sBufferIDs[2] = { 0, 0 };
+		static GLuint& srVertBufferID = sBufferIDs[0];
+		static GLuint& srVertUVID = sBufferIDs[1];
 		if (sInit)
 		{
-			glGenBuffers(1, &sBufferID);
-			glBindBuffer(GL_ARRAY_BUFFER, sBufferID);
+			glGenBuffers(2, sBufferIDs);
+			glBindBuffer(GL_ARRAY_BUFFER, srVertBufferID);
 			glBufferData(GL_ARRAY_BUFFER, sizeof(lVertices), lVertices, GL_STATIC_DRAW);
+			
+			glBindBuffer(GL_ARRAY_BUFFER, srVertUVID);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(lVertUVs), lVertUVs, GL_STATIC_DRAW);
+			
 			sInit = false;
 		}
 		
 		glUseProgram(mShaderProg);
 		
 		GLint lPosID = glGetAttribLocation(mShaderProg, "a_VertPos");
+		GLint lUVID = glGetAttribLocation(mShaderProg, "a_VertUV");
 		GLint lMatID = glGetUniformLocation(mShaderProg, "u_Matrix");
 		GLint lColID = glGetUniformLocation(mShaderProg, "u_Colour");
+		GLint lSmpID = glGetUniformLocation(mShaderProg, "u_Texture");
 		
 		glm::mat4 m(1.0f);	// identity
 		m = glm::translate(m, glm::vec3(-1.0f, 1.0f, 0.0f));
@@ -130,16 +144,43 @@ void Video::flip()
 		//m = glm::ortho(0, Settings::getInt("screen/width"), Settings::getInt("screen/height"), 0);
 		glUniformMatrix4fv(lMatID, 1, GL_FALSE, &m[0][0]);
 		
-		float lCol[] = { 0.3f, 0.3f, 1.0f, 1.0f };
+		float lCol[] = { 0.0f, 1.0f, 0.0f, 1.0f };
 		glUniform4fv(lColID, 1, lCol);
+		
+		SDL_Surface* lpSurf = gApplication.getBackgroundTexture();
+		static GLuint sTexID = 0;
+		if (lpSurf != nullptr)
+		{
+			if (sTexID == 0)
+			{
+				glGenTextures(1, &sTexID);
+				glBindTexture(GL_TEXTURE_2D, sTexID);
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, lpSurf->w, lpSurf->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, lpSurf->pixels);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+				glBindTexture(GL_TEXTURE_2D, 0);
+			}
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, sTexID);
+			glUniform1i(lSmpID, 0);
+			
+			glBindBuffer(GL_ARRAY_BUFFER, srVertUVID);
+			glVertexAttribPointer(lUVID, 2, GL_FLOAT, GL_FALSE, 0, 0);
+			glEnableVertexAttribArray(lUVID);
+		}
 		
 		glDisable(GL_DEPTH_TEST);
 		
-		glBindBuffer(GL_ARRAY_BUFFER, sBufferID);
+		glBindBuffer(GL_ARRAY_BUFFER, srVertBufferID);
 		glVertexAttribPointer(lPosID, 3, GL_FLOAT, GL_FALSE, 0, 0);
 		glEnableVertexAttribArray(lPosID);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 		glDisableVertexAttribArray(lPosID);
+		
+		if (lpSurf != nullptr)
+			glDisableVertexAttribArray(lUVID);
 	}
 	
 	//SDL_Flip(mpDisplaySurface);
