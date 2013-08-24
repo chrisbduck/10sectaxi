@@ -146,6 +146,7 @@ void Video::flip()
 		float lScaleY = Settings::getFloat("test/height");
 		float lPosX = Settings::getFloat("test/x");
 		float lPosY = Settings::getFloat("test/y");
+		float lRotRad = Settings::getFloat("test/rotation") * M_PI / 180.0f;
 		
 		float lRescalerX = 2.0f / Settings::getFloat("screen/width");
 		float lRescalerY = -2.0f / Settings::getFloat("screen/height");
@@ -154,6 +155,7 @@ void Video::flip()
 		m = glm::translate(m, glm::vec3(lPosX * lRescalerX - 1.0f,
 										lPosY * lRescalerY + 1.0f,
 										0.0f));
+		m = glm::rotate(m, lRotRad, glm::vec3(0.0f, 0.0f, 1.0f));
 		m = glm::scale(m, glm::vec3(lScaleX * lRescalerX,
 									lScaleY * lRescalerY,
 									1.0f));
