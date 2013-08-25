@@ -57,6 +57,9 @@ Application::Application(const std::vector<std::string> &lrArgs) :
 	mpMusic(nullptr),
 	mpTestSound(nullptr),
 	mCash(0),
+	mCountdownSec(0.0f),
+	mpCurrentHouse(nullptr),
+	mpCurrentTarget(nullptr),
 	mMsgDisplayTimeSec(0.0f)
 {
 	ASSERT(msInstance == nullptr);
@@ -195,6 +198,7 @@ void Application::initObjects()
 		lpNewHouse->setTexture(gTextureManager.load("data/tex/house-" + lTex + ".jpg"));
 		
 		gEntityManager.registerEntity(lpNewHouse);
+		lpNewHouse->setName("house_" + lrName);
 	}
 	
 	std::vector<std::string> lMenNames = Settings::getStringVector("men");
@@ -219,11 +223,14 @@ void Application::addCash(int lAmount)
 
 //------------------------------------------------------------------------------
 
-void Application::setStatusMessage(const std::string &lrText)
+void Application::setStatusMessage(const std::string &lrText, const std::string& lrText2)
 {
 	static const float kDisplayTimeSec = Settings::getFloat("general/msg_display_time_sec");
-	mStatusMsg = lrText;
+	mStatusMsg  = lrText2.empty() ? std::string() : lrText;
+	mStatusMsg2 = lrText2.empty() ? lrText : lrText2;
 	mMsgDisplayTimeSec = kDisplayTimeSec;
+	if (!lrText2.empty())
+		mMsgDisplayTimeSec *= 1.5f;
 }
 
 //------------------------------------------------------------------------------
@@ -274,7 +281,17 @@ void Application::update(float lTimeDeltaSec)
 	{
 		mMsgDisplayTimeSec -= lTimeDeltaSec;
 		if (mMsgDisplayTimeSec <= 0.0f)
+		{
 			mStatusMsg.clear();
+			mStatusMsg2.clear();
+		}
+	}
+	
+	if (mCountdownSec > 0.0f)
+	{
+		mCountdownSec -= lTimeDeltaSec;
+		if (mCountdownSec <= 0.0f)
+			losePassenger();
 	}
 	
 	gVideo.update(lTimeDeltaSec);
@@ -294,10 +311,17 @@ void Application::render() const
 	static const SDL_Colour kWhite = { 0xFF, 0xFF, 0xFF, 0xFF };
 	static const SDL_Colour kOrange = { 0xFF, 0x80, 0, 0xFF };
 	static const SDL_Colour kYellow = { 0xFF, 0xFF, 0, 0xFF };
+	static const SDL_Colour kRed = { 0xFF, 0x40, 0x40, 0xFF };
 	
 	char lTextBuf[16];
 	snprintf(lTextBuf, sizeof(lTextBuf), "FPS: %.1f", gVideo.approxFPS());
-	gFontManager.renderOnScreen(lTextBuf, -10.0f, -10.0f, kWhite, FontManager::kAlignRight, FontManager::kAlignBottom);
+	gFontManager.renderOnScreen(lTextBuf, -10.0f, -30.0f, kWhite, FontManager::kAlignRight, FontManager::kAlignBottom);
+	
+	if (mCountdownSec > 0.0f)
+	{
+		snprintf(lTextBuf, sizeof(lTextBuf), "%.1f", mCountdownSec);
+		gFontManager.renderOnScreen(lTextBuf, -10.0f, -8.0f, kRed, FontManager::kAlignRight, FontManager::kAlignBottom);
+	}
 	
 	//snprintf(lTextBuf, sizeof(lTextBuf), "Spd: %.1f", gpPlayer->speed());
 	//gFontManager.renderOnScreen(lTextBuf, 10.0f, -10.0f, kOrange, FontManager::kAlignLeft, FontManager::kAlignBottom);
@@ -305,16 +329,80 @@ void Application::render() const
 	//gFontManager.renderOnScreen(lTextBuf, 140.0f, -10.0f, kOrange, FontManager::kAlignLeft, FontManager::kAlignBottom);
 	
 	snprintf(lTextBuf, sizeof(lTextBuf), "$%d", mCash);	// TO DO: pounds or euros :)
-	gFontManager.renderOnScreen(lTextBuf, 10.0f, -10.0f, kOrange, FontManager::kAlignLeft, FontManager::kAlignBottom);
+	gFontManager.renderOnScreen(lTextBuf, 10.0f, -8.0f, kOrange, FontManager::kAlignLeft, FontManager::kAlignBottom);
 	
 	static const float kScreenWidth = Settings::getFloat("screen/width");
 	//static const float kScreenHeight = Settings::getFloat("screen/height");
 	
 	if (!mStatusMsg.empty())
-		gFontManager.renderOnScreen(mStatusMsg.c_str(), kScreenWidth * 0.5f, -10.0f, kYellow, FontManager::kAlignXCentre,
+		gFontManager.renderOnScreen(mStatusMsg.c_str(), kScreenWidth * 0.5f, -30.0f, kYellow, FontManager::kAlignXCentre,
+									FontManager::kAlignBottom);
+	if (!mStatusMsg2.empty())
+		gFontManager.renderOnScreen(mStatusMsg2.c_str(), kScreenWidth * 0.5f, -8.0f, kYellow, FontManager::kAlignXCentre,
 									FontManager::kAlignBottom);
 	
 	gVideo.flip();
+}
+
+//------------------------------------------------------------------------------
+
+HouseEntity* Application::findHouse(const std::string &lrLabel) const
+{
+	for (Entity* lpEntity: gEntityManager.allEntities())
+	{
+		HouseEntity* lpHouse = dynamic_cast<HouseEntity*> (lpEntity);
+		if (lpHouse == nullptr)
+			continue;
+		if (lpHouse->name() == "house_" + lrLabel)
+			return lpHouse;
+	}
+	return nullptr;
+}
+
+//------------------------------------------------------------------------------
+
+HouseEntity* Application::pickRandomHouse()
+{
+	static const std::vector<std::string> kDestinations = Settings::getStringVector("level/destinations");
+	
+	HouseEntity* lpHouse = nullptr;
+	do
+	{
+		int lTargetIndex = emscripten_random() * float(kDestinations.size());
+		std::string lTargetName = kDestinations[lTargetIndex];
+		lpHouse = findHouse(lTargetName);
+	} while (lpHouse == mpCurrentHouse);
+	
+	ASSERT(lpHouse != nullptr);
+	mpCurrentHouse = lpHouse;
+	return lpHouse;
+}
+
+//------------------------------------------------------------------------------
+
+void Application::losePassenger()
+{
+	ASSERT(mpCurrentHouse != nullptr);
+	setStatusMessage(mpCurrentHouse->getLoseMessage());
+	ASSERT(mpCurrentTarget != nullptr);
+	mpCurrentTarget->kill();
+	mpCurrentTarget = nullptr;
+	stopCountdown();
+}
+
+//------------------------------------------------------------------------------
+
+void Application::winPassenger(int lCashValue)
+{
+	ASSERT(mpCurrentHouse != nullptr);
+	
+	std::string lMsg = mpCurrentHouse->getWinMessage();
+	char lBuf[256];
+	snprintf(lBuf, sizeof(lBuf), lMsg.c_str(), lCashValue);
+	setStatusMessage(lBuf);
+	addCash(lCashValue);
+	stopCountdown();
+	setCurrentTarget(nullptr);	// killed already
 }
 
 //------------------------------------------------------------------------------

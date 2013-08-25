@@ -19,6 +19,11 @@ public:
 	virtual const char* type() const { return "house"; }
 	
 	virtual float bounceFactor() const;
+	
+	std::string getStartMessage() const;
+	std::string getStartMessage2() const;
+	std::string getWinMessage() const;
+	std::string getLoseMessage() const;
 };
 
 //------------------------------------------------------------------------------

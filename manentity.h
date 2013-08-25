@@ -23,4 +23,22 @@ public:
 
 //------------------------------------------------------------------------------
 
+class TargetEntity : public CollidableEntity
+{
+public:
+	TargetEntity(float lX, float lY);
+	
+	virtual const char* type() const { return "target"; }
+	
+	virtual void triggerCollisionEvent();
+	
+	void setCashValue(int lValue) { mCashValue = lValue; }
+	void setCashValueFromDistance(float lStartX, float lStartY);
+	
+private:
+	int mCashValue;
+};
+
+//------------------------------------------------------------------------------
+
 #endif // MANENTITY_H

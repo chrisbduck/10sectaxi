@@ -15,7 +15,9 @@
 //------------------------------------------------------------------------------
 
 class Music;
+class HouseEntity;
 class Sound;
+class TargetEntity;
 class Texture;
 
 //------------------------------------------------------------------------------
@@ -43,7 +45,17 @@ public:
 	
 	void addCash(int lAmount);
 	
-	void setStatusMessage(const std::string& lrText);
+	void setStatusMessage(const std::string& lrText, const std::string& lrText2 = std::string());
+	
+	HouseEntity* findHouse(const std::string& lrLabel) const;
+	HouseEntity* pickRandomHouse();
+	
+	bool havePassenger() const { return mCountdownSec > 0.0f; }
+	void startCountdown() { mCountdownSec = 10.0f; }
+	void stopCountdown() { mCountdownSec = 0.0f; }
+	void losePassenger();
+	void winPassenger(int lCashValue);
+	void setCurrentTarget(TargetEntity* lpTarget) { mpCurrentTarget = lpTarget; }
 	
 private:
 	
@@ -73,8 +85,12 @@ private:
 	Music* mpMusic;
 	Sound* mpTestSound;
 	int mCash;
+	float mCountdownSec;
+	HouseEntity* mpCurrentHouse;
+	TargetEntity* mpCurrentTarget;
 	
 	std::string mStatusMsg;
+	std::string mStatusMsg2;
 	float mMsgDisplayTimeSec;
 	
 };

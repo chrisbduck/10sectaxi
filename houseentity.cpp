@@ -25,3 +25,31 @@ float HouseEntity::bounceFactor() const
 }
 
 //------------------------------------------------------------------------------
+
+std::string HouseEntity::getStartMessage() const
+{
+	return Settings::getString(name() + "/start_message");
+}
+
+//------------------------------------------------------------------------------
+
+std::string HouseEntity::getStartMessage2() const
+{
+	return Settings::getString(name() + "/start_message2");
+}
+
+//------------------------------------------------------------------------------
+
+std::string HouseEntity::getWinMessage() const
+{
+	return Settings::getString(name() + "/win_message");
+}
+
+//------------------------------------------------------------------------------
+
+std::string HouseEntity::getLoseMessage() const
+{
+	return Settings::getString(name() + "/lose_message");
+}
+
+//------------------------------------------------------------------------------
