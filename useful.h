@@ -52,6 +52,17 @@ int getIntParam(const std::vector<std::string>& lrParamList, int lParamIndex);
 float getFloatParam(const std::vector<std::string>& lrParamList, int lParamIndex);
 
 //
+// Colour conversions
+//
+
+uint32_t u32ColFromFloats(float lA, float lR, float lG, float lB);
+inline uint32_t u32ColFromFloats(float lR, float lG, float lB)		{ return u32ColFromFloats(1.0f, lR, lG, lB); }
+inline uint32_t u32ColFromFloats(const float* lpFloats)				{ return u32ColFromFloats(lpFloats[0], lpFloats[1], lpFloats[2], lpFloats[3]); }
+void getFloatColsFromU32(uint32_t lCol, float* lpAOut, float* lpROut, float* lpGOut, float* lpBOut);
+inline void getFloatColsFromU32(uint32_t lCol, float* lpFloatsOut)	{ getFloatColsFromU32(lCol, &lpFloatsOut[0], &lpFloatsOut[1],
+																	  &lpFloatsOut[2], &lpFloatsOut[3]); }
+
+//
 // Other functions
 //
 
@@ -77,7 +88,6 @@ void getPolarFromRect(float lX, float lY, float* lpMagOut, float* lpAngleRadOut)
 void getRectFromPolar(float lMag, float lAngleRad, float* lpXOut, float* lpYOut);
 void testPolarFromRect(float lX, float lY);			//
 void testRectFromPolar(float lMag, float lAngRad);	// internal testing
-
 //------------------------------------------------------------------------------
 
 #endif // USEFUL_H

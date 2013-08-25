@@ -9,6 +9,7 @@
 
 #include "entity.h"
 
+#include "useful.h"
 #include <GLES2/gl2.h>
 
 //------------------------------------------------------------------------------
@@ -28,15 +29,20 @@ public:
 	
 	void setTexture(Texture* lpTexture);
 	
-	float rotationRad() const { return mRotationRad; }
-	void setRotationRad(float lRotation) { mRotationRad = lRotation; }
+	uint32_t colour() const									{ return u32ColFromFloats(mColour); }
+	void setColour(uint32_t lColour)						{ getFloatColsFromU32(lColour, mColour); }
+	void setColour(float lR, float lG, float lB)			{ setColour(1.0f, lR, lG, lB); }
+	void setColour(float lA, float lR, float lG, float lB)	{ mColour[0] = lA; mColour[1] = lR; mColour[2] = lG; mColour[3] = lB; }
+	
+	float rotationRad() const								{ return mRotationRad; }
+	void setRotationRad(float lRotation)					{ mRotationRad = lRotation; }
 	float fixedRotationRad() const;
 	
-	void setBlendEnabled(bool lEnabled) { mBlendEnabled = lEnabled; }
-	void setBehindCamera(bool lBehind) { mBehindCamera = lBehind; }
+	void setBlendEnabled(bool lEnabled)						{ mBlendEnabled = lEnabled; }
+	void setBehindCamera(bool lBehind)						{ mBehindCamera = lBehind; }
 	
 protected:
-	void setRotationStartsFromUp(bool lEnabled) { mRotationStartsFromUp = lEnabled; }	// for car sprite, etc
+	void setRotationStartsFromUp(bool lEnabled)				{ mRotationStartsFromUp = lEnabled; }	// for car sprite, etc
 	
 private:
 	
@@ -45,6 +51,7 @@ private:
 	
 	Texture* mpTexture;
 	float mRotationRad;
+	float mColour[4];			// ARGB
 	bool mRotationStartsFromUp;
 	bool mBlendEnabled;
 	bool mBehindCamera;			// the sprite's position is only affected by camera movement if this is false

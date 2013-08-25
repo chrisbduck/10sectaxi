@@ -52,6 +52,9 @@ SpriteEntity::SpriteEntity(float lX, float lY) :
 	mBlendEnabled(true),
 	mBehindCamera(false)
 {
+	for (int lIndex = 0; lIndex < sizeof(mColour) / sizeof(float); ++lIndex)
+		mColour[lIndex] = 1.0f;
+	
 	if (!msStaticInitDone)
 		staticInit();
 }
@@ -136,8 +139,7 @@ void SpriteEntity::render() const
 	glUniformMatrix4fv(msMatUniformID, 1, GL_FALSE, &lTransform[0][0]);
 	
 	// Colour
-	float lCol[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-	glUniform4fv(msColUniformID, 1, lCol);
+	glUniform4fv(msColUniformID, 1, mColour);
 	
 	// Texture
 	mpTexture->activate();

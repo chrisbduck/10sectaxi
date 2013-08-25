@@ -104,6 +104,28 @@ float getFloatParam(const std::vector<std::string>& lrParamList, int lParamIndex
 }
 
 //------------------------------------------------------------------------------
+// Colour conversion
+//------------------------------------------------------------------------------
+
+uint32_t u32ColFromFloats(float lA, float lR, float lG, float lB)
+{
+	return   (uint32_t(uint8_t(lA * 255.0f)) << 24)
+		   + (uint32_t(uint8_t(lR * 255.0f)) << 16)
+		   + (uint32_t(uint8_t(lG * 255.0f)) <<  8)
+		   + (uint32_t(uint8_t(lB * 255.0f))      );
+}
+
+//------------------------------------------------------------------------------
+
+void getFloatColsFromU32(uint32_t lCol, float* lpAOut, float* lpROut, float* lpGOut, float* lpBOut)
+{
+	*lpAOut = float(uint8_t(lCol >> 24)) / 255.0f;
+	*lpROut = float(uint8_t(lCol >> 16)) / 255.0f;
+	*lpGOut = float(uint8_t(lCol >>  8)) / 255.0f;
+	*lpBOut = float(uint8_t(lCol      )) / 255.0f;
+}
+
+//------------------------------------------------------------------------------
 // Other functions
 //------------------------------------------------------------------------------
 
