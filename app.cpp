@@ -13,6 +13,7 @@
 #include "entitymanager.h"
 #include "fontmanager.h"
 #include "houseentity.h"
+#include "manentity.h"
 #include "playercarentity.h"
 #include "settings.h"
 #include "spriteentity.h"
@@ -54,7 +55,8 @@ Application::Application(const std::vector<std::string> &lrArgs) :
 	mAreaTop(0.0f),
 	mAreaBottom(0.0f),
 	mpMusic(nullptr),
-	mpTestSound(nullptr)
+	mpTestSound(nullptr),
+	mCash(0)
 {
 	ASSERT(msInstance == nullptr);
 	msInstance = this;
@@ -129,7 +131,7 @@ bool Application::init()
 	//mpTestSound->play();
 	
 	initBackground(kDisplayWidth, kDisplayHeight);
-	initPlaces();
+	initObjects();
 	
 	//CarEntity* lpCar = new CarEntity(50.0f, 50.0f, "red");
 	//gEntityManager.registerEntity(lpCar);
@@ -173,7 +175,7 @@ void Application::initBackground(float lDisplayWidth, float lDisplayHeight)
 
 //------------------------------------------------------------------------------
 
-void Application::initPlaces()
+void Application::initObjects()
 {
 	Settings::setGroup("level");
 	std::vector<std::string> lHouseNames = Settings::getStringVector("houses");
@@ -193,6 +195,25 @@ void Application::initPlaces()
 		
 		gEntityManager.registerEntity(lpNewHouse);
 	}
+	
+	std::vector<std::string> lMenNames = Settings::getStringVector("men");
+	for (const std::string& lrName: lMenNames)
+	{
+		std::string lPosKey = "man" + lrName + "_pos";
+		std::vector<float> lHousePos = Settings::getFloatVector(lPosKey);
+		float lManX = getFloatParam(lHousePos, 0) - 800;	//
+		float lManY = getFloatParam(lHousePos, 1) - 600;	// for typing convenience :)
+		ManEntity* lpNewMan = new ManEntity(lManX, lManY);
+		
+		gEntityManager.registerEntity(lpNewMan);
+	}
+}
+
+//------------------------------------------------------------------------------
+
+void Application::addCash(int lAmount)
+{
+	mCash += lAmount;
 }
 
 //------------------------------------------------------------------------------
@@ -260,10 +281,13 @@ void Application::render() const
 	snprintf(lTextBuf, sizeof(lTextBuf), "FPS: %.1f", gVideo.approxFPS());
 	gFontManager.renderOnScreen(lTextBuf, -10.0f, -10.0f, kWhite, FontManager::kAlignRight, FontManager::kAlignBottom);
 	
-	snprintf(lTextBuf, sizeof(lTextBuf), "Spd: %.1f", gpPlayer->speed());
+	//snprintf(lTextBuf, sizeof(lTextBuf), "Spd: %.1f", gpPlayer->speed());
+	//gFontManager.renderOnScreen(lTextBuf, 10.0f, -10.0f, kOrange, FontManager::kAlignLeft, FontManager::kAlignBottom);
+	//snprintf(lTextBuf, sizeof(lTextBuf), "Dir: %.1f", gpPlayer->rotationRad());
+	//gFontManager.renderOnScreen(lTextBuf, 140.0f, -10.0f, kOrange, FontManager::kAlignLeft, FontManager::kAlignBottom);
+	
+	snprintf(lTextBuf, sizeof(lTextBuf), "$%d", mCash);	// TO DO: pounds or euros :)
 	gFontManager.renderOnScreen(lTextBuf, 10.0f, -10.0f, kOrange, FontManager::kAlignLeft, FontManager::kAlignBottom);
-	snprintf(lTextBuf, sizeof(lTextBuf), "Dir: %.1f", gpPlayer->rotationRad());
-	gFontManager.renderOnScreen(lTextBuf, 140.0f, -10.0f, kOrange, FontManager::kAlignLeft, FontManager::kAlignBottom);
 	
 	gVideo.flip();
 }

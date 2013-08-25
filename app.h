@@ -41,6 +41,8 @@ public:
 	float areaTop() const { return mAreaTop; }
 	float areaBottom() const { return mAreaBottom; }
 	
+	void addCash(int lAmount);
+	
 private:
 	
 	void processEvents();
@@ -51,7 +53,7 @@ private:
 	
 	bool init();		// returns false on failure
 	void initBackground(float lDisplayWidth, float lDisplayHeight);
-	void initPlaces();
+	void initObjects();
 	void runMainLoopIteration();
 	
 	
@@ -68,6 +70,7 @@ private:
 	
 	Music* mpMusic;
 	Sound* mpTestSound;
+	int mCash;
 	
 };
 

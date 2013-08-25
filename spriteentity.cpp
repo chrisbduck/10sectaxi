@@ -185,7 +185,8 @@ float SpriteEntity::fixedRotationRad() const
 
 CollidableEntity::CollidableEntity(float lX, float lY) :
 	SpriteEntity(lX, lY),
-	mUsesCircleCollisions(false)
+	mUsesCircleCollisions(false),
+	mCollisionTriggersEvent(false)
 {
 }
 
@@ -219,6 +220,14 @@ bool CollidableEntity::checkCollisionWith(CollidableEntity* lpOther)
 	if (name().find("player") == std::string::npos)
 		return false;
 	
+	// If the other entity is too far away, just skip it
+	{
+		float lOffsetX = fabsf(lpOther->x() - x());
+		float lOffsetY = fabsf(lpOther->y() - y());
+		float lTooFar = lpOther->halfWidth() + lpOther->halfHeight() + halfWidth() + halfHeight();
+		if (lOffsetX + lOffsetY >= lTooFar)
+			return false;
+	}
 	
 	// Draw a line on each side of the player's car and see if it intersects the house rect
 	
@@ -272,6 +281,13 @@ bool CollidableEntity::checkCollisionWith(CollidableEntity* lpOther)
 		return false;
 	
 	//printf("%s collided with %s\n", name().c_str(), lpOther->name().c_str());
+	
+	// Check if we should trigger an event instead of bouncing off
+	if (lpOther->collisionTriggersEvent())
+	{
+		lpOther->triggerCollisionEvent();
+		return true;
+	}
 	
 	float lBounceFactor = bounceFactor() * lpOther->bounceFactor();
 	

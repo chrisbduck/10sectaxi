@@ -20,7 +20,8 @@ Entity::Entity(float lX, float lY) :
 	mVelX(0.0f),
 	mVelY(0.0f),
 	mWidth(0.0f),
-	mHeight(0.0f)
+	mHeight(0.0f),
+	mAlive(true)
 {
 }
 

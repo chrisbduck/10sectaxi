@@ -68,6 +68,12 @@ void EntityManager::setNameForEntity(Entity *lpEntity)
 
 void EntityManager::update(float lTimeDeltaSec)
 {
+	// Remove dead entities first
+	std::vector<Entity*>::iterator liEraseBegin = std::partition(mEntities.begin(), mEntities.end(),
+																 [](Entity* lpEntity) { return lpEntity->isAlive(); });
+	mEntities.erase(liEraseBegin, mEntities.end());
+	
+	// Update all
 	for (Entity* lpEntity: mEntities)
 		lpEntity->update(lTimeDeltaSec);
 }

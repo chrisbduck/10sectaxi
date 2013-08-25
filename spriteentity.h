@@ -81,13 +81,18 @@ public:
 	bool usesCircleCollisions() const { return mUsesCircleCollisions; }
 	virtual float bounceFactor() const;
 	
+	bool collisionTriggersEvent() const { return mCollisionTriggersEvent; }
+	virtual void triggerCollisionEvent() {}
+	
 protected:
 	void setUsesCircleCollisions(bool lEnabled)				{ mUsesCircleCollisions = lEnabled; }
+	void setCollisionTriggersEvent(bool lTriggers)			{ mCollisionTriggersEvent = lTriggers; }
 	
 	void getRotatedBoundingBox(float* lpLeftOut, float* lpTopOut, float* lpRightOut, float* lpBottomOut) const;
 	
 private:
 	bool mUsesCircleCollisions;
+	bool mCollisionTriggersEvent;
 };
 
 //------------------------------------------------------------------------------

@@ -59,6 +59,9 @@ public:
 	
 	bool isPointInRect(float lX, float lY) const { return lX >= left() && lX < right() && lY >= top() && lY < bottom(); }
 	
+	bool isAlive() const { return mAlive; }
+	void kill() { mAlive = false; }
+	
 	
 protected:
 	
@@ -75,6 +78,7 @@ private:
 	std::string mName;
 	float mWidth;
 	float mHeight;
+	bool mAlive;
 };
 
 //------------------------------------------------------------------------------
