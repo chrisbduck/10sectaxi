@@ -48,7 +48,8 @@ SpriteEntity::SpriteEntity(float lX, float lY) :
 	Entity(lX, lY),
 	mpTexture(nullptr),
 	mRotationRad(0.0f),
-	mRotationStartsFromUp(false)
+	mRotationStartsFromUp(false),
+	mBlendEnabled(true)
 {
 	if (!msStaticInitDone)
 		staticInit();
@@ -148,8 +149,14 @@ void SpriteEntity::render() const
 	glVertexAttribPointer(msUVAttributeID, 2, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(msUVAttributeID);
 	
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	// Blending
+	if (mBlendEnabled)
+	{
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	}
+	else
+		glDisable(GL_BLEND);
 	
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	

@@ -43,7 +43,7 @@ void CarEntity::update(float lTimeDeltaSec)
 {
 	float lVelMag, lVelAngleRad;
 	getPolarFromRect(velX(), velY(), &lVelMag, &lVelAngleRad);
-	printf("mag = %f; angle = %f\n", lVelMag, lVelAngleRad);
+	//printf("mag = %f; angle = %f\n", lVelMag, lVelAngleRad);
 	
 	if (floatApproxEquals(lVelMag, 0.0f))
 		lVelAngleRad = rotation();			// use previous rotation

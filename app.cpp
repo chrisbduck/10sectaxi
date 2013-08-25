@@ -159,6 +159,7 @@ void Application::initBackground(float lDisplayWidth, float lDisplayHeight)
 			SpriteEntity* lpBackground = new SpriteEntity(lX, lY);
 			lpBackground->setName((std::ostringstream() << "background (" << lXTile << ", " << lYTile << ")").str());
 			lpBackground->setTexture(lpTexture);
+			lpBackground->setBlendEnabled(false);
 			gEntityManager.registerEntity(lpBackground);	// must be first
 		}
 	

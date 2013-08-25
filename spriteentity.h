@@ -31,6 +31,8 @@ public:
 	float rotation() const { return mRotationRad; }
 	void setRotation(float lRotation) { mRotationRad = lRotation; }
 	
+	void setBlendEnabled(bool lEnabled) { mBlendEnabled = lEnabled; }
+	
 protected:
 	void setRotationStartsFromUp(bool lEnabled) { mRotationStartsFromUp = lEnabled; }	// for car sprite, etc
 	
@@ -42,6 +44,7 @@ private:
 	Texture* mpTexture;
 	float mRotationRad;
 	bool mRotationStartsFromUp;
+	bool mBlendEnabled;
 	
 	// All sprites are rendered using a common set of vertex positions and UVs, and a set shader programme
 	static bool msStaticInitDone;

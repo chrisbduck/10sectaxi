@@ -11,9 +11,15 @@
 
 //------------------------------------------------------------------------------
 
+PlayerCarEntity* gpPlayer = nullptr;
+
+//------------------------------------------------------------------------------
+
 PlayerCarEntity::PlayerCarEntity(float lX, float lY) :
 	CarEntity(lX, lY, "yellow")
 {
+	ASSERT(gpPlayer == nullptr);
+	gpPlayer = this;
 }
 
 //------------------------------------------------------------------------------
@@ -24,7 +30,7 @@ void PlayerCarEntity::update(float lTimeDeltaSec)
 	int lNumKeys;
 	uint8_t* lpKeysHeld = SDL_GetKeyboardState(&lNumKeys);
 	
-	bool lAnyHeld = false;
+	/*bool lAnyHeld = false;
 	for (int lKey = 0; lKey < lNumKeys; ++lKey)
 		if (lpKeysHeld[lKey])
 		{
@@ -34,7 +40,7 @@ void PlayerCarEntity::update(float lTimeDeltaSec)
 			lAnyHeld = true;
 		}
 	if (lAnyHeld)
-		printf("\n");
+		printf("\n");*/
 	
 	// Brake/accelerate
 	if (lpKeysHeld[SDLK_KP_2] || lpKeysHeld[SDLK_DOWN])
