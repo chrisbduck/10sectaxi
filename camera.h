@@ -26,6 +26,12 @@ public:
 	float halfViewWidth() const		{ return halfWidth(); }
 	float halfViewHeight() const	{ return halfHeight(); }
 	
+	float offsetX() const	{ return x() - halfWidth(); }
+	float offsetY() const	{ return y() - halfHeight(); }
+	bool canSee(const Entity* lpTarget) const;
+	
+	void updateFromPlayer(Entity* lpPlayer, float lMinX, float lMinY, float lMaxX, float lMaxY);
+	
 private:
 };
 

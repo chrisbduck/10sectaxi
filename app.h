@@ -36,7 +36,10 @@ public:
 	enum PageUpdateType { UpdatePage, DoNotUpdatePage };
 	void toggleMusic(PageUpdateType lUpdate);
 	
-	Texture* getBackgroundTexture() const { return mpBackground; }
+	float areaLeft() const { return mAreaLeft; }
+	float areaRight() const { return mAreaRight; }
+	float areaTop() const { return mAreaTop; }
+	float areaBottom() const { return mAreaBottom; }
 	
 private:
 	
@@ -47,6 +50,7 @@ private:
 	void render() const;
 	
 	bool init();		// returns false on failure
+	void initBackground(float lDisplayWidth, float lDisplayHeight);
 	void runMainLoopIteration();
 	
 	
@@ -58,15 +62,12 @@ private:
 	float mCurrentTimeSec;
 	bool mQuit;
 	
+	float mAreaLeft, mAreaRight;	//
+	float mAreaTop, mAreaBottom;	// accessible play area
+	
 	Music* mpMusic;
 	Sound* mpTestSound;
 	
-	Texture* mpBackground;
-	Texture* mpGuard;
-	std::vector<float> mvGuardX;
-	std::vector<float> mvGuardY;
-	std::vector<float> mvGuardVX;
-	std::vector<float> mvGuardVY;
 };
 
 #define gApplication Application::instance()

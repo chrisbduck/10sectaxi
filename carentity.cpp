@@ -6,6 +6,7 @@
 
 #include "carentity.h"
 
+#include "app.h"
 #include "settings.h"
 #include "texturemanager.h"
 #include "useful.h"
@@ -97,6 +98,33 @@ void CarEntity::update(float lTimeDeltaSec)
 	}
 	
 	SpriteEntity::update(lTimeDeltaSec);
+	
+	// Enforce boundaries
+	Application& lrApp = gApplication;
+	if (left() < lrApp.areaLeft())
+	{
+		setX(lrApp.areaLeft() + halfWidth());
+		if (velX() < 0.0f)
+			setVelX(0.0f);
+	}
+	else if (right() > lrApp.areaRight())
+	{
+		setX(lrApp.areaRight() - halfWidth());
+		if (velX() > 0.0f)
+			setVelX(0.0f);
+	}
+	if (top() < lrApp.areaTop())
+	{
+		setY(lrApp.areaTop() + halfHeight());
+		if (velY() < 0.0f)
+			setVelY(0.0f);
+	}
+	else if (bottom() > lrApp.areaBottom())
+	{
+		setY(lrApp.areaBottom() - halfHeight());
+		if (velY() > 0.0f)
+			setVelY(0.0f);
+	}
 }
 
 //------------------------------------------------------------------------------

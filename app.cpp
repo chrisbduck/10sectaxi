@@ -24,6 +24,7 @@
 #include <SDL/SDL_image.h>
 #include <cstdio>
 #include <cstdlib>
+#include <sstream>
 
 //------------------------------------------------------------------------------
 // Functions defined in JavaScript in the HTML file
@@ -47,7 +48,12 @@ Application::Application(const std::vector<std::string> &lrArgs) :
 	mStartTimeSec(0.0f),
 	mCurrentTimeSec(0.0f),
 	mQuit(false),
-	mpMusic(nullptr)
+	mAreaLeft(0.0f),
+	mAreaRight(0.0f),
+	mAreaTop(0.0f),
+	mAreaBottom(0.0f),
+	mpMusic(nullptr),
+	mpTestSound(nullptr)
 {
 	ASSERT(msInstance == nullptr);
 	msInstance = this;
@@ -121,19 +127,11 @@ bool Application::init()
 	//mpTestSound = gAudioManager.loadSound("data/test_sfx.ogg");
 	//mpTestSound->play();
 	
-	//mpBackground = gTextureManager.load("data/grass.jpg");
-	mpBackground = gTextureManager.load(Settings::getString("screen/background_texture"));
-	mpGuard = gTextureManager.load("data/guard.png");
-	
-	SpriteEntity* lpBackground = new SpriteEntity(float(kDisplayWidth) * 0.5f, float(kDisplayHeight) * 0.5f);
-	lpBackground->setName("background");
-	lpBackground->setTexture(gTextureManager.load("data/grass.jpg"));
-	gEntityManager.registerEntity(lpBackground);	// must be first
+	initBackground(kDisplayWidth, kDisplayHeight);
 	
 	//CarEntity* lpCar = new CarEntity(50.0f, 50.0f, "red");
 	//gEntityManager.registerEntity(lpCar);
-	PlayerCarEntity* lpPlayer = new PlayerCarEntity(300.0f, 300.0f);
-	gEntityManager.registerEntity(lpPlayer);
+	gEntityManager.registerEntity(new PlayerCarEntity(300.0f, 300.0f));
 	
 	// Set up the times immediately before starting the main loop
 	mStartTimeSec = emscripten_get_now() * 0.001f;
@@ -142,6 +140,32 @@ bool Application::init()
 	emscripten_set_main_loop(&Application::updateWrapper, 0, 0);
 	
 	return true;
+}
+
+//------------------------------------------------------------------------------
+
+void Application::initBackground(float lDisplayWidth, float lDisplayHeight)
+{
+	Texture* lpTexture = gTextureManager.load("data/grass.jpg");
+	
+	float lCentreX = lDisplayWidth * 0.5f;
+	float lCentreY = lDisplayHeight * 0.5f;
+	
+	for (int lXTile = -1; lXTile <= 1; ++lXTile)
+		for (int lYTile = -1; lYTile <= 1; ++lYTile)
+		{
+			float lX = lCentreX + lXTile * lDisplayWidth;
+			float lY = lCentreY + lYTile * lDisplayHeight;
+			SpriteEntity* lpBackground = new SpriteEntity(lX, lY);
+			lpBackground->setName((std::ostringstream() << "background (" << lXTile << ", " << lYTile << ")").str());
+			lpBackground->setTexture(lpTexture);
+			gEntityManager.registerEntity(lpBackground);	// must be first
+		}
+	
+	mAreaLeft = -lDisplayWidth;
+	mAreaTop = -lDisplayHeight;
+	mAreaRight = 2.0f * lDisplayWidth;
+	mAreaBottom = 2.0f * lDisplayHeight;
 }
 
 //------------------------------------------------------------------------------
@@ -170,33 +194,14 @@ void Application::processEvents()
 
 void Application::update(float lTimeDeltaSec)
 {
-	/*static float sNextTraceSec = mStartTimeSec;
-	static int sIterations = 0;
-	++sIterations;
-	if (mCurrentTimeSec >= sNextTraceSec)
-	{
-		//printf("Hello again, after %d iterations\n", sIterations);
-		sNextTraceSec += 2.0f;
-		
-		static int s_AgainCounter = 0;
-		++s_AgainCounter;
-		if (s_AgainCounter >= 15)
-		{
-			quit();
-			return;
-		}
-	}*/
-	
 	gEntityManager.update(lTimeDeltaSec);
+	gpCamera->updateFromPlayer(gpPlayer, mAreaLeft, mAreaTop, mAreaRight, mAreaBottom);
 }
 
 //------------------------------------------------------------------------------
 
 void Application::render() const
 {
-	//SDL_BlitSurface(mpBackground, nullptr, gVideo.getDisplaySurface(), nullptr);
-	//SDL_FillRect(gVideo.getDisplaySurface(), nullptr, 0xFF000000);
-	
 	gVideo.clear();
 	
 	gEntityManager.render();

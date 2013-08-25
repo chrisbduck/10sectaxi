@@ -21,6 +21,8 @@ public:
 	virtual void update(float lTimeDeltaSec);
 };
 
+extern PlayerCarEntity* gpPlayer;
+
 //------------------------------------------------------------------------------
 
 #endif // PLAYERCARENTITY_H
