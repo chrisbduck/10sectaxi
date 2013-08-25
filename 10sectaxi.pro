@@ -42,7 +42,9 @@ OTHER_FILES += \
 	data/settings.cfg \
     ideas.txt \
     data/shaders/default.vsh \
-    data/shaders/default.frag
+    data/shaders/default.frag \
+    build/page-fns.js \
+    release-fixer.py
 
 HEADERS += \
 	app.h \

@@ -196,7 +196,10 @@ void Application::processEvents()
 void Application::update(float lTimeDeltaSec)
 {
 	gEntityManager.update(lTimeDeltaSec);
+	
 	gpCamera->updateFromPlayer(gpPlayer, mAreaLeft, mAreaTop, mAreaRight, mAreaBottom);
+	
+	gVideo.update(lTimeDeltaSec);
 }
 
 //------------------------------------------------------------------------------
@@ -207,7 +210,13 @@ void Application::render() const
 	
 	gEntityManager.render();
 	
-	gFontManager.render("Hello everyone", 50.0f, 50.0f, { 0xFF, 0x80, 0, 0xFF }, FontManager::kAlignLeft);
+	//gFontManager.renderInWorld("This moves", 50.0f, 50.0f, { 0xFF, 0x80, 0, 0xFF });
+	//gFontManager.renderOnScreen("This doesn't", 200.0f, 200.0f, { 0xFF, 0, 0, 0xFF }, FontManager::kAlignLeft);
+	
+	char lTextBuf[16];
+	snprintf(lTextBuf, sizeof(lTextBuf), "FPS: %.1f", gVideo.approxFPS());
+	gFontManager.renderOnScreen(lTextBuf, -10.0f, -10.0f, { 0xFF, 0xFF, 0xFF, 0xFF }, FontManager::kAlignRight,
+								FontManager::kAlignBottom);
 	
 	gVideo.flip();
 }

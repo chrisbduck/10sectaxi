@@ -31,18 +31,7 @@
       <input type="button" value="Full Screen" onclick="Module.requestFullScreen(document.getElementById('pointerLock').checked, 
                                                                                  document.getElementById('resize').checked)">
     </div>
-    <script type='text/javascript'>
-      // These functions give the app access to page elements
-      _page_toggleMusic = function()
-      {
-        music_box = document.getElementById("music");
-        music_box.checked = !music_box.checked;
-      }
-      _page_isMusicEnabled = function()
-      {
-        return document.getElementById("music").checked;
-      }
-    </script>
+    <script type='text/javascript' src='page-fns.js'></script>
     
     <hr/>
     <textarea class="emscripten" id="output" rows="8"></textarea>

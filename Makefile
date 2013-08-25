@@ -16,8 +16,9 @@ $(OBJS): | $(OBJDIR)
 
 BUILDDIR := build
 
-TARGETS := $(BUILDDIR)/10sectaxi.js $(BUILDDIR)/10sectaxi.js.map
-ALLTARGETS := $(TARGETS)
+TARGET := $(BUILDDIR)/10sectaxi.js
+ALLTARGETS := $(TARGET)
+SIDETARGETS := $(BUILDDIR)/10sectaxi.js.map
 
 # Data and related
 
@@ -34,9 +35,11 @@ $(OBJDIR)/%.bc: %.cpp %.h
 	emcc $(CXXFLAGS) -o $@ $<
 
 EXPORT_FUNCS := "['_main', '_malloc', '_app_toggleMusic']"
+PAGE_FUNCS := _page_toggleMusic _page_isMusicEnabled
+JS_LIB = $(BUILDDIR)/page-fns.js
 
-$(TARGETS): $(OBJS)
-	emcc $(CXXFLAGS) -s EXPORTED_FUNCTIONS=$(EXPORT_FUNCS) -o $@ $^
+$(TARGET): $(OBJS) | $(JS_LIB)
+	emcc $(CXXFLAGS) -s EXPORTED_FUNCTIONS=$(EXPORT_FUNCS) --js-library $(JS_LIB) -o $@ $^
 
 # Clean
 
@@ -44,7 +47,7 @@ $(TARGETS): $(OBJS)
 clean:
 	rm -f $(OBJS)
 	if [ -e $(OBJDIR) ]; then rmdir $(OBJDIR); fi
-	rm -f $(ALLTARGETS)
+	rm -f $(ALLTARGETS) $(SIDETARGETS)
 
 # Main build configs
 
@@ -54,4 +57,5 @@ debug: main
 debug: CXXFLAGS += -g
 
 release: main
+	python release-fixer.py $(TARGET) $(PAGE_FUNCS)
 release: CXXFLAGS += -O2 -s DISABLE_EXCEPTION_CATCHING=1

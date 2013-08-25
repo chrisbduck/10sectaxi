@@ -27,9 +27,17 @@ public:
 	enum XAlignment { kAlignLeft, kAlignXCentre, kAlignRight };
 	enum YAlignment { kAlignTop, kAlignYCentre, kAlignBottom };
 	
-	void render(const char* lpText, float lX, float lY, SDL_Colour lCol, XAlignment lXAlign, YAlignment lYAlign = kAlignYCentre);
+	// This text is affected by camera movement
+	void renderInWorld(const char* lpText, float lX, float lY, SDL_Colour lCol);
+	
+	// This text is unaffected by camera movement.  You can also specify negative x and y to give positions relative to
+	// the right and bottom of the screen respectively.
+	void renderOnScreen(const char* lpText, float lX, float lY, SDL_Colour lCol, XAlignment lXAlign, YAlignment lYAlign = kAlignYCentre);
 	
 private:
+	
+	void renderInternal(const char* lpText, float lX, float lY, SDL_Colour lCol, XAlignment lXAlign, YAlignment lYAlign, bool lBehindCamera);
+	
 	bool			mInitialised;
 	TTF_Font*		mpDefaultFont;
 	SDL_Surface*	mpDisplaySurface;

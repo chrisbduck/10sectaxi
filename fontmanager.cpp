@@ -78,7 +78,28 @@ void FontManager::shutDown()
 
 //------------------------------------------------------------------------------
 
-void FontManager::render(const char* lpText, float lX, float lY, SDL_Colour lCol, XAlignment lXAlign, YAlignment lYAlign)
+void FontManager::renderOnScreen(const char *lpText, float lX, float lY, SDL_Color lCol, XAlignment lXAlign, YAlignment lYAlign)
+{
+	if (lX < 0.0f)
+		lX += Settings::getFloat("screen/width");
+	if (lY < 0.0f)
+		lY += Settings::getFloat("screen/height");
+	
+	const bool kBehindCamera = true;
+	renderInternal(lpText, lX, lY, lCol, lXAlign, lYAlign, kBehindCamera);
+}
+
+//------------------------------------------------------------------------------
+
+void FontManager::renderInWorld(const char *lpText, float lX, float lY, SDL_Color lCol)
+{
+	const bool kNotBehindCamera = false;
+	renderInternal(lpText, lX, lY, lCol, kAlignXCentre, kAlignYCentre, kNotBehindCamera);
+}
+
+//------------------------------------------------------------------------------
+
+void FontManager::renderInternal(const char* lpText, float lX, float lY, SDL_Colour lCol, XAlignment lXAlign, YAlignment lYAlign, bool lBehindCamera)
 {
 	ASSERT(mInitialised);
 	
@@ -102,6 +123,7 @@ void FontManager::render(const char* lpText, float lX, float lY, SDL_Colour lCol
 	// Create a temporary sprite and render it
 	SpriteEntity lTempSprite(lX, lY);
 	lTempSprite.setTexture(&lTex);
+	lTempSprite.setBehindCamera(lBehindCamera);
 	lTempSprite.render();
 }
 

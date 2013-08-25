@@ -24,7 +24,9 @@ Video gVideo;
 
 Video::Video() :
 	mInitialised(false),
-	mpDisplaySurface(nullptr)
+	mpDisplaySurface(nullptr),
+	mFrameCounterSec(0.0f),
+	mNumCountedFrames(0)
 {
 }
 
@@ -76,6 +78,25 @@ void Video::shutDown()
 	}
 	
 	mInitialised = false;
+}
+
+//------------------------------------------------------------------------------
+
+void Video::update(float lTimeDeltaSec)
+{
+	const float lUpdateIntervalSec = Settings::getFloat("screen/fps_update_interval_sec");
+	
+	++mNumCountedFrames;
+	mFrameCounterSec += lTimeDeltaSec;
+	if (mFrameCounterSec >= lUpdateIntervalSec)
+	{
+		if (mFrameCounterSec <= 0.0f)
+			mApproxFPS = 0.0f;
+		else
+			mApproxFPS = float(mNumCountedFrames) / mFrameCounterSec;
+		mNumCountedFrames = 0;
+		mFrameCounterSec = 0.0f;
+	}
 }
 
 //------------------------------------------------------------------------------

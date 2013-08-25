@@ -49,7 +49,8 @@ SpriteEntity::SpriteEntity(float lX, float lY) :
 	mpTexture(nullptr),
 	mRotationRad(0.0f),
 	mRotationStartsFromUp(false),
-	mBlendEnabled(true)
+	mBlendEnabled(true),
+	mBehindCamera(false)
 {
 	if (!msStaticInitDone)
 		staticInit();
@@ -114,11 +115,16 @@ void SpriteEntity::render() const
 		return;
 	glUseProgram(msShaderProg);
 	
-	if (!gpCamera->canSee(this))
-		return;
-	
-	float lAdjustedX = x() - gpCamera->offsetX();
-	float lAdjustedY = y() - gpCamera->offsetY();
+	float lAdjustedX = x();
+	float lAdjustedY = y();
+	if (!mBehindCamera)
+	{
+		if (!gpCamera->canSee(this))
+			return;
+		
+		lAdjustedX -= gpCamera->offsetX();
+		lAdjustedY -= gpCamera->offsetY();
+	}
 	
 	// Set up the transformation matrix
 	

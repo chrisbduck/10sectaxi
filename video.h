@@ -26,6 +26,10 @@ public:
 	bool init(int lDisplayWidth, int lDisplayHeight);
 	void shutDown();
 	
+	void update(float lTimeDeltaSec);
+	
+	float approxFPS() const { return mApproxFPS; }
+	
 	void clear();
 	void flip();
 	
@@ -42,6 +46,9 @@ private:
 	
 	bool			mInitialised;
 	SDL_Surface*	mpDisplaySurface;
+	float			mFrameCounterSec;
+	int				mNumCountedFrames;
+	float			mApproxFPS;
 	
 	std::unordered_set<GLuint> mShaderProgSet;
 };
