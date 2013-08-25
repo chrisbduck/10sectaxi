@@ -190,6 +190,8 @@ void Application::initPlaces()
 
 void Application::processEvents()
 {
+	static bool sReturnHeld = false;
+	
 	SDL_Event lEvent;
 	while (SDL_PollEvent(&lEvent) > 0)
 		switch (lEvent.type)
@@ -202,6 +204,18 @@ void Application::processEvents()
 					quit();
 				else if (lEvent.key.keysym.sym == SDLK_m)
 					toggleMusic(UpdatePage);
+				else if (lEvent.key.keysym.sym == SDLK_RETURN)
+				{
+					if (!sReturnHeld)
+					{
+						printf("\n");
+						sReturnHeld = true;
+					}
+				}
+				break;
+			case SDL_KEYUP:
+				if (lEvent.key.keysym.sym == SDLK_RETURN)
+					sReturnHeld = false;
 				break;
 			default:
 				break;

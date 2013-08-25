@@ -35,7 +35,8 @@ SOURCES += \
     carentity.cpp \
     playercarentity.cpp \
     video.cpp \
-    houseentity.cpp
+    houseentity.cpp \
+    rectentity.cpp
 
 OTHER_FILES += \
 	Makefile \
@@ -62,4 +63,5 @@ HEADERS += \
     carentity.h \
     playercarentity.h \
     video.h \
-    houseentity.h
+    houseentity.h \
+    rectentity.h

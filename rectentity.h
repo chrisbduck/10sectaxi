@@ -1,26 +1,26 @@
 //------------------------------------------------------------------------------
-// HouseEntity: An obstacle for the player's car.
-// 
+// RectEntity: Rendered rectangles.
+//
 // by Chris Bevan, 2013
 //------------------------------------------------------------------------------
 
-#ifndef HOUSEENTITY_H
-#define HOUSEENTITY_H
+#if 0
+#ifndef RECTENTITY_H
+#define RECTENTITY_H
 
-#include "spriteentity.h"
+#include "entity.h"
 
 //------------------------------------------------------------------------------
 
-class HouseEntity : public CollidableEntity
+class RectEntity : public Entity
 {
 public:
-	HouseEntity(float lX, float lY);
+	RectEntity(float lX, float lY);
 	
-	virtual const char* type() const { return "house"; }
-	
-	virtual float bounceFactor() const;
+	virtual void render() const;
 };
 
 //------------------------------------------------------------------------------
 
-#endif // HOUSEENTITY_H
+#endif // RECTENTITY_H
+#endif	// 0

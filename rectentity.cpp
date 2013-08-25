@@ -1,28 +1,27 @@
 //------------------------------------------------------------------------------
-// HouseEntity: An obstacle for the player's car.
-// 
+// RectEntity: Rendered rectangles.
+//
 // by Chris Bevan, 2013
 //------------------------------------------------------------------------------
 
-#include "houseentity.h"
-
-#include "settings.h"
-#include "texturemanager.h"
+#if 0
+#include "rectentity.h"
 
 //------------------------------------------------------------------------------
 
-HouseEntity::HouseEntity(float lX, float lY) :
-	CollidableEntity(lX, lY)
+RectEntity::RectEntity(float lX, float lY) :
+	Entity(lX, lY)
 {
-	setTexture(gTextureManager.load("data/house1-128.jpg"));
 }
 
 //------------------------------------------------------------------------------
 
-float HouseEntity::bounceFactor() const
+void RectEntity::render() const
 {
-	static float kFactor = Settings::getFloat("collision/house_bounce_factor");
-	return kFactor;
+	Entity::render();
+	
+	
 }
 
 //------------------------------------------------------------------------------
+#endif	// 0

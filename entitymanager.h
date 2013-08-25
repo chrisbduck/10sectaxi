@@ -45,6 +45,8 @@ public:
 	Entity* create(const std::string& lrType, const std::string& lrParameterString);
 	Entity* create(const std::string& lrType, const std::vector<std::string>& lrParameters);
 	
+	const std::vector<Entity*>& allEntities() const { return mEntities; }
+	
 	void update(float lTimeDeltaSec);
 	void render() const;
 	

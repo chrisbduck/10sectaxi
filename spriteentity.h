@@ -70,4 +70,26 @@ private:
 
 //------------------------------------------------------------------------------
 
+class CollidableEntity : public SpriteEntity
+{
+public:
+	CollidableEntity(float lX, float lY);
+	
+	virtual const char* type() const { return "collidable"; }
+	
+	bool checkCollisionWith(CollidableEntity* lpOther);
+	bool usesCircleCollisions() const { return mUsesCircleCollisions; }
+	virtual float bounceFactor() const;
+	
+protected:
+	void setUsesCircleCollisions(bool lEnabled)				{ mUsesCircleCollisions = lEnabled; }
+	
+	void getRotatedBoundingBox(float* lpLeftOut, float* lpTopOut, float* lpRightOut, float* lpBottomOut) const;
+	
+private:
+	bool mUsesCircleCollisions;
+};
+
+//------------------------------------------------------------------------------
+
 #endif // SPRITEENTITY_H

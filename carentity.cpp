@@ -7,6 +7,7 @@
 #include "carentity.h"
 
 #include "app.h"
+#include "entitymanager.h"
 #include "settings.h"
 #include "texturemanager.h"
 #include "useful.h"
@@ -15,12 +16,13 @@
 //------------------------------------------------------------------------------
 
 CarEntity::CarEntity(float lX, float lY, const std::string& lrColour) :
-	SpriteEntity(lX, lY),
+	CollidableEntity(lX, lY),
 	mSteerCtrl(0.0f),
 	mAccelCtrl(0.0f)
 {
 	setTexture(gTextureManager.load("data/tex/" + lrColour + "-car.png"));
-	setRotationStartsFromUp(true);
+	//setRotationStartsFromUp(true);
+	setUsesCircleCollisions(true);
 }
 
 //------------------------------------------------------------------------------
@@ -40,8 +42,12 @@ void CarEntity::update(float lTimeDeltaSec)
 	getRectFromPolar(1.0f, lFacingAngleRad + M_PI_OVER_2, &lTangXNorm, &lTangYNorm);
 	float lTangSpeed = velX() * lTangXNorm + velY() * lTangYNorm;
 	
+	bool lMoving = true;
 	if (floatApproxEquals(lVelMag, 0.0f))
+	{
 		lVelAngleRad = lFacingAngleRad;			// use previous rotation
+		lMoving = false;
+	}
 	
 	static const float kSteerRadsPerSecLow		= Settings::getFloat("handling/steer_rads_per_sec_low");
 	static const float kSteerRadsPerSecHigh		= Settings::getFloat("handling/steer_rads_per_sec_high");
@@ -103,9 +109,18 @@ void CarEntity::update(float lTimeDeltaSec)
 	
 	setRotationRad(lFacingAngleRad);
 	
-	SpriteEntity::update(lTimeDeltaSec);
+	if (lMoving)
+		checkCollisions();
 	
-	// Enforce boundaries
+	CollidableEntity::update(lTimeDeltaSec);
+	
+	enforceBoundaries();
+}
+
+//------------------------------------------------------------------------------
+
+void CarEntity::enforceBoundaries()
+{
 	Application& lrApp = gApplication;
 	if (left() < lrApp.areaLeft())
 	{
@@ -131,6 +146,30 @@ void CarEntity::update(float lTimeDeltaSec)
 		if (velY() > 0.0f)
 			setVelY(0.0f);
 	}
+}
+
+//------------------------------------------------------------------------------
+
+void CarEntity::checkCollisions()
+{
+	for (Entity* lpEntity: gEntityManager.allEntities())
+	{
+		if (lpEntity == this)
+			continue;
+		
+		// Only check collidables
+		CollidableEntity* lpCollidable = dynamic_cast<CollidableEntity*>(lpEntity);
+		if (lpCollidable != nullptr)
+			checkCollisionWith(lpCollidable);
+	}
+}
+
+//------------------------------------------------------------------------------
+
+float CarEntity::bounceFactor() const
+{
+	static float kFactor = Settings::getFloat("collision/car_bounce_factor");
+	return kFactor;
 }
 
 //------------------------------------------------------------------------------

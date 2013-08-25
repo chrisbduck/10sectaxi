@@ -11,7 +11,7 @@
 
 //------------------------------------------------------------------------------
 
-class CarEntity : public SpriteEntity
+class CarEntity : public CollidableEntity
 {
 public:
 	CarEntity(float lX, float lY, const std::string& lrColour);
@@ -20,7 +20,13 @@ public:
 	
 	virtual void update(float lTimeDeltaSec);
 	
+	virtual float bounceFactor() const;
+	
 protected:
+	
+	void enforceBoundaries();
+	void checkCollisions();
+	
 	float mSteerCtrl;	// <0 => left; >0 => right
 	float mAccelCtrl;	// >0 => accelerate; <0 => brake/reverse accelerate
 	float mLastAngle;	// last recorded velocity angle for the car

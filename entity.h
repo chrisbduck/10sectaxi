@@ -57,6 +57,9 @@ public:
 	float top() const		{ return mY - mHeight * 0.5f; }
 	float bottom() const	{ return mY + mHeight * 0.5f; }
 	
+	bool isPointInRect(float lX, float lY) const { return lX >= left() && lX < right() && lY >= top() && lY < bottom(); }
+	
+	
 protected:
 	
 	void setWidth(float lWidth)		{ mWidth = lWidth; }
