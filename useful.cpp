@@ -129,6 +129,14 @@ void traceDirContents(const std::string& lrDirName)
 
 //------------------------------------------------------------------------------
 
+void traceSurface(const SDL_Surface* lpSurface)
+{
+	printf("Surface %p: %dx%d, pitch %d, flags %xh, format %xh (%d bpp)\n", lpSurface, lpSurface->w, lpSurface->h, lpSurface->pitch,
+		   lpSurface->flags, lpSurface->format->format, lpSurface->format->BitsPerPixel);
+}
+
+//------------------------------------------------------------------------------
+
 std::string getFileContents(const std::string &lrFileName)
 {
 	std::ifstream lFile(lrFileName);

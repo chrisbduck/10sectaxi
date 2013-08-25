@@ -7,6 +7,8 @@
 #include "fontmanager.h"
 
 #include "settings.h"
+#include "spriteentity.h"
+#include "texturemanager.h"
 #include "useful.h"
 
 //------------------------------------------------------------------------------
@@ -76,18 +78,31 @@ void FontManager::shutDown()
 
 //------------------------------------------------------------------------------
 
-void FontManager::render(const char* lpText, int lX, int lY, SDL_Colour lCol)
+void FontManager::render(const char* lpText, float lX, float lY, SDL_Colour lCol, XAlignment lXAlign, YAlignment lYAlign)
 {
 	ASSERT(mInitialised);
 	
-	return;	// HACK
-	
+	// Create the rendered surface and put it in a temporary texture
 	SDL_Surface* lpRenderedFontSurface = TTF_RenderText_Blended(mpDefaultFont, lpText, lCol);
+	// Note that we lock the surface but don't unlock it.  The SDL unlock call hits an assertion failure, and we only
+	// need the pixels temporarily anyway.  This may be a tiny bit unreliable, but let's hope it's fine.
+	SDL_LockSurface(lpRenderedFontSurface);
+	Texture lTex(lpRenderedFontSurface, Texture::FilteringType::kNearest);
 	
-	SDL_Rect lTargetRect = { lX, lY, lpRenderedFontSurface->w, lpRenderedFontSurface->h };
+	// Adjust for alignment
+	if (lXAlign == kAlignRight)
+		lX -= float(lpRenderedFontSurface->w) * 0.5f;
+	else if (lXAlign == kAlignLeft)
+		lX += float(lpRenderedFontSurface->w) * 0.5f;
+	if (lYAlign == kAlignBottom)
+		lY -= float(lpRenderedFontSurface->h) * 0.5f;
+	else if (lYAlign == kAlignTop)
+		lY += float(lpRenderedFontSurface->h) * 0.5f;
 	
-	SDL_BlitSurface(lpRenderedFontSurface, nullptr, mpDisplaySurface, &lTargetRect);
-	SDL_FreeSurface(lpRenderedFontSurface);
+	// Create a temporary sprite and render it
+	SpriteEntity lTempSprite(lX, lY);
+	lTempSprite.setTexture(&lTex);
+	lTempSprite.render();
 }
 
 //------------------------------------------------------------------------------

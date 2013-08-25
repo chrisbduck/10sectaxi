@@ -66,17 +66,19 @@ Texture* TextureManager::load(const std::string &lrFileName)
 // Texture
 //------------------------------------------------------------------------------
 
-Texture::Texture(SDL_Surface* lpSurface) :
+Texture::Texture(SDL_Surface* lpSurface, FilteringType lFilteringType) :
 	mpSurface(lpSurface),
 	mTexID(0)
 {
 	if (mpSurface != nullptr)
 	{
+		GLint lFilterVal = (lFilteringType == kLinear) ? GL_LINEAR : GL_NEAREST;
+		
 		glGenTextures(1, &mTexID);
 		glBindTexture(GL_TEXTURE_2D, mTexID);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, mpSurface->w, mpSurface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, mpSurface->pixels);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, lFilterVal);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, lFilterVal);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -89,6 +91,7 @@ Texture::~Texture()
 {
 	if (mpSurface != nullptr)
 	{
+		glDeleteTextures(1, &mTexID);
 		SDL_FreeSurface(mpSurface);
 		mpSurface = nullptr;
 	}

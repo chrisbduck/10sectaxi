@@ -40,7 +40,9 @@ extern TextureManager gTextureManager;
 class Texture
 {
 public:
-	Texture(SDL_Surface* lpSurface);
+	enum FilteringType { kNearest, kLinear };
+	
+	Texture(SDL_Surface* lpSurface, FilteringType lFilteringType = kLinear);	// the texture takes ownership of this surface
 	~Texture();
 	
 	void activate(GLenum lTextureStage = GL_TEXTURE0);
@@ -49,7 +51,7 @@ public:
 	int height() const;
 	
 private:
-	SDL_Surface*	mpSurface;
+	SDL_Surface*	mpSurface;		// the texture owns this surface
 	GLuint			mTexID;
 };
 

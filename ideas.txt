@@ -17,3 +17,9 @@ Power-ups:
 - Turbo boost - Knight-Rider-style single jump over stuff
 - Instant reverse - Nonsensical stop and turn around
 
+
+Tasks:
+- Fix angles (introduce facing angle, independent of velocity)
+- Implement reversing
+- Collision
+- Fonts

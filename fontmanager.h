@@ -24,7 +24,10 @@ public:
 	bool init(SDL_Surface* lpDisplaySurface);
 	void shutDown();
 	
-	void render(const char* lpText, int lX, int lY, SDL_Colour lCol);
+	enum XAlignment { kAlignLeft, kAlignXCentre, kAlignRight };
+	enum YAlignment { kAlignTop, kAlignYCentre, kAlignBottom };
+	
+	void render(const char* lpText, float lX, float lY, SDL_Colour lCol, XAlignment lXAlign, YAlignment lYAlign = kAlignYCentre);
 	
 private:
 	bool			mInitialised;

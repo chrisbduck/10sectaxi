@@ -57,6 +57,8 @@ float getFloatParam(const std::vector<std::string>& lrParamList, int lParamIndex
 
 void traceDirContents(const std::string& lrDirName);
 
+void traceSurface(const SDL_Surface* lpSurface);
+
 std::string getFileContents(const std::string& lrFileName);
 
 float lerp(float lFactor, float lVal1, float lVal2);

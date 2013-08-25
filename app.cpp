@@ -207,7 +207,7 @@ void Application::render() const
 	
 	gEntityManager.render();
 	
-	gFontManager.render("Hello everyone", 50, 50, { 0xFF, 0x80, 0, 0xFF });
+	gFontManager.render("Hello everyone", 50.0f, 50.0f, { 0xFF, 0x80, 0, 0xFF }, FontManager::kAlignLeft);
 	
 	gVideo.flip();
 }
