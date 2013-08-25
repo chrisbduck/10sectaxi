@@ -49,7 +49,9 @@ void strip(std::string& lrTarget);
 
 const std::string& getStringParam(const std::vector<std::string>& lrParamList, int lParamIndex);
 int getIntParam(const std::vector<std::string>& lrParamList, int lParamIndex);
+int getIntParam(const std::vector<int>& lrParamList, int lParamIndex);
 float getFloatParam(const std::vector<std::string>& lrParamList, int lParamIndex);
+int getFloatParam(const std::vector<float>& lrParamList, int lParamIndex);
 
 //
 // Colour conversions

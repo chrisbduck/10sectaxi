@@ -27,9 +27,11 @@ namespace
 		
 		static SettingsManager& instance();
 		
-		int getInt(const std::string& lrName);
-		float getFloat(const std::string& lrName);
-		const std::string& getString(const std::string& lrName);
+		int getInt(const std::string& lrName) const;
+		float getFloat(const std::string& lrName) const;
+		const std::string& getString(const std::string& lrName) const;
+		std::vector<int> getIntVector(const std::string& lrName) const;
+		std::vector<float> getFloatVector(const std::string& lrName) const;
 		
 		bool setGroup(const std::string& lrName);		// returns false (and traces) if the group does not exist
 		
@@ -41,7 +43,7 @@ namespace
 		std::string		mCurrentGroupName;
 		SettingsGroup*	mpCurrentGroup;
 		
-		SettingsGroup* getGroup(const std::string& lrName, const char* lpErrorFormat = "Group \"%s\" not found\n");
+		SettingsGroup* getGroup(const std::string& lrName, const char* lpErrorFormat = "Group \"%s\" not found\n") const;
 		
 	};
 	
@@ -135,7 +137,7 @@ namespace
 	
 	//------------------------------------------------------------------------------
 	
-	int SettingsManager::getInt(const std::string& lrName)
+	int SettingsManager::getInt(const std::string& lrName) const
 	{
 		const std::string& lrValue = getString(lrName);
 		return atoi(lrValue.c_str());
@@ -143,7 +145,7 @@ namespace
 	
 	//------------------------------------------------------------------------------
 	
-	float SettingsManager::getFloat(const std::string& lrName)
+	float SettingsManager::getFloat(const std::string& lrName) const
 	{
 		const std::string& lrValue = getString(lrName);
 		return atof(lrValue.c_str());
@@ -151,7 +153,7 @@ namespace
 	
 	//------------------------------------------------------------------------------
 	
-	const std::string& SettingsManager::getString(const std::string& lrName)
+	const std::string& SettingsManager::getString(const std::string& lrName) const
 	{
 		std::string lKeyName = lrName;
 		std::string lGroupName = mCurrentGroupName;
@@ -184,6 +186,42 @@ namespace
 	
 	//------------------------------------------------------------------------------
 	
+	std::vector<int> SettingsManager::getIntVector(const std::string& lrName) const
+	{
+		std::vector<int> lOutput;
+		
+		const std::string& lrText = getString(lrName);
+		std::vector<std::string> lSegments = split(lrText);
+		for (const std::string& lrSegment: lSegments)
+		{
+			int lVal = atoi(lrSegment.c_str());
+			if (lVal != 0 || (!lrSegment.empty() && lrSegment.front() == '0'))
+				lOutput.push_back(lVal);
+		}
+		
+		return lOutput;
+	}
+	
+	//------------------------------------------------------------------------------
+	
+	std::vector<float> SettingsManager::getFloatVector(const std::string& lrName) const
+	{
+		std::vector<float> lOutput;
+		
+		const std::string& lrText = getString(lrName);
+		std::vector<std::string> lSegments = split(lrText);
+		for (const std::string& lrSegment: lSegments)
+		{
+			float lVal = atof(lrSegment.c_str());
+			if (lVal != 0.0f || (!lrSegment.empty() && lrSegment.front() == '0'))
+				lOutput.push_back(lVal);
+		}
+		
+		return lOutput;
+	}
+	
+	//------------------------------------------------------------------------------
+	
 	bool SettingsManager::setGroup(const std::string& lrName)
 	{
 		SettingsGroup* lpGroup = getGroup(lrName);
@@ -197,7 +235,7 @@ namespace
 	
 	//------------------------------------------------------------------------------
 	
-	SettingsManager::SettingsGroup* SettingsManager::getGroup(const std::string& lrName, const char* lpErrorFormat)
+	SettingsManager::SettingsGroup* SettingsManager::getGroup(const std::string& lrName, const char* lpErrorFormat) const
 	{
 		auto liGroup = mGroupMap.find(lrName);
 		if (liGroup == mGroupMap.end())
@@ -233,6 +271,20 @@ float Settings::getFloat(const std::string& lrName)
 const std::string& Settings::getString(const std::string& lrName)
 {
 	return SettingsManager::instance().getString(lrName);
+}
+
+//------------------------------------------------------------------------------
+
+std::vector<int> Settings::getIntVector(const std::string& lrName)
+{
+	return SettingsManager::instance().getIntVector(lrName);
+}
+
+//------------------------------------------------------------------------------
+
+std::vector<float> Settings::getFloatVector(const std::string& lrName)
+{
+	return SettingsManager::instance().getFloatVector(lrName);
 }
 
 //------------------------------------------------------------------------------

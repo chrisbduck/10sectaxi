@@ -98,9 +98,27 @@ int getIntParam(const std::vector<std::string> &lrParamList, int lParamIndex)
 
 //------------------------------------------------------------------------------
 
+int getIntParam(const std::vector<int>& lrParamList, int lParamIndex)
+{
+	if (lParamIndex < 0 || lParamIndex >= int(lrParamList.size()))
+		return 0;
+	return lrParamList[lParamIndex];
+}
+
+//------------------------------------------------------------------------------
+
 float getFloatParam(const std::vector<std::string>& lrParamList, int lParamIndex)
 {
 	return atof(getStringParam(lrParamList, lParamIndex).c_str());
+}
+
+//------------------------------------------------------------------------------
+
+int getFloatParam(const std::vector<float>& lrParamList, int lParamIndex)
+{
+	if (lParamIndex < 0 || lParamIndex >= int(lrParamList.size()))
+		return 0.0f;
+	return lrParamList[lParamIndex];
 }
 
 //------------------------------------------------------------------------------

@@ -51,6 +51,7 @@ private:
 	
 	bool init();		// returns false on failure
 	void initBackground(float lDisplayWidth, float lDisplayHeight);
+	void initPlaces();
 	void runMainLoopIteration();
 	
 	

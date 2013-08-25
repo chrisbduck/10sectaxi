@@ -12,6 +12,7 @@
 #include "carentity.h"
 #include "entitymanager.h"
 #include "fontmanager.h"
+#include "houseentity.h"
 #include "playercarentity.h"
 #include "settings.h"
 #include "spriteentity.h"
@@ -128,6 +129,7 @@ bool Application::init()
 	//mpTestSound->play();
 	
 	initBackground(kDisplayWidth, kDisplayHeight);
+	initPlaces();
 	
 	//CarEntity* lpCar = new CarEntity(50.0f, 50.0f, "red");
 	//gEntityManager.registerEntity(lpCar);
@@ -167,6 +169,21 @@ void Application::initBackground(float lDisplayWidth, float lDisplayHeight)
 	mAreaTop = -lDisplayHeight;
 	mAreaRight = 2.0f * lDisplayWidth;
 	mAreaBottom = 2.0f * lDisplayHeight;
+}
+
+//------------------------------------------------------------------------------
+
+void Application::initPlaces()
+{
+	Settings::setGroup("level");
+	std::vector<int> lHouseNumbers = Settings::getIntVector("houses");
+	for (int lNum: lHouseNumbers)
+	{
+		std::string lPosKey = (std::ostringstream() << "house" << lNum << "_pos").str();
+		std::vector<float> lHousePos = Settings::getFloatVector(lPosKey);
+		HouseEntity* lpNewHouse = new HouseEntity(getFloatParam(lHousePos, 0), getFloatParam(lHousePos, 1));
+		gEntityManager.registerEntity(lpNewHouse);
+	}
 }
 
 //------------------------------------------------------------------------------
