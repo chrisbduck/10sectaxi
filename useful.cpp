@@ -43,7 +43,7 @@ std::vector<std::string> split(const std::string &lrOriginal, const std::string&
 			lFinished = true;
 		}
 		if (lNextSplit > lSplitStart)
-			lVec.push_back(lrOriginal.substr(lSplitStart, lNextSplit));
+			lVec.push_back(lrOriginal.substr(lSplitStart, lNextSplit - lSplitStart));
 		lSplitStart = lNextSplit + 1;
 	}
 	

@@ -23,6 +23,7 @@ namespace Settings
 	const std::string& getString(const std::string& lrName);
 	std::vector<int> getIntVector(const std::string& lrName);
 	std::vector<float> getFloatVector(const std::string& lrName);
+	std::vector<std::string> getStringVector(const std::string& lrName);
 	
 	bool setGroup(const std::string& lrName);		// returns false (and traces) if the group does not exist
 }

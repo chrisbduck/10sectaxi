@@ -176,12 +176,21 @@ void Application::initBackground(float lDisplayWidth, float lDisplayHeight)
 void Application::initPlaces()
 {
 	Settings::setGroup("level");
-	std::vector<int> lHouseNumbers = Settings::getIntVector("houses");
-	for (int lNum: lHouseNumbers)
+	std::vector<std::string> lHouseNames = Settings::getStringVector("houses");
+	for (const std::string& lrName: lHouseNames)
 	{
-		std::string lPosKey = (std::ostringstream() << "house" << lNum << "_pos").str();
+		std::string lPosKey = "house" + lrName + "_pos";
 		std::vector<float> lHousePos = Settings::getFloatVector(lPosKey);
-		HouseEntity* lpNewHouse = new HouseEntity(getFloatParam(lHousePos, 0), getFloatParam(lHousePos, 1));
+		float lHouseX = getFloatParam(lHousePos, 0) - 800;	//
+		float lHouseY = getFloatParam(lHousePos, 1) - 600;	// for typing convenience :)
+		HouseEntity* lpNewHouse = new HouseEntity(lHouseX, lHouseY);
+		
+		std::string lTexKey = "house" + lrName + "_tex";
+		std::string lTex = Settings::getString(lTexKey);
+		if (lTex.empty())
+			lTex = (std::ostringstream() << (1 + int(emscripten_random() * 9.0f))).str();
+		lpNewHouse->setTexture(gTextureManager.load("data/tex/house-" + lTex + ".jpg"));
+		
 		gEntityManager.registerEntity(lpNewHouse);
 	}
 }

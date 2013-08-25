@@ -32,6 +32,7 @@ namespace
 		const std::string& getString(const std::string& lrName) const;
 		std::vector<int> getIntVector(const std::string& lrName) const;
 		std::vector<float> getFloatVector(const std::string& lrName) const;
+		std::vector<std::string> getStringVector(const std::string& lrName) const;
 		
 		bool setGroup(const std::string& lrName);		// returns false (and traces) if the group does not exist
 		
@@ -174,14 +175,21 @@ namespace
 		auto liEntry = lpGroup->find(lKeyName);
 		if (liEntry == lpGroup->end())
 		{
-			printf("Key \"%s\" not found in group \"%s\".\n", lKeyName.c_str(), lGroupName.c_str());
+			/*printf("Key \"%s\" not found in group \"%s\".\n", lKeyName.c_str(), lGroupName.c_str());
 			printf("List of keys:\n");
 			for (auto liEntry: *lpGroup)
-				printf("    \"%s\"\n", liEntry.second.c_str());
+				printf("    \"%s\"\n", liEntry.second.c_str());*/
 			return kEmptyString;
 		}
 		
 		return liEntry->second;
+	}
+	
+	//------------------------------------------------------------------------------
+	
+	std::vector<std::string> SettingsManager::getStringVector(const std::string& lrName) const
+	{
+		return split(getString(lrName));
 	}
 	
 	//------------------------------------------------------------------------------
@@ -285,6 +293,13 @@ std::vector<int> Settings::getIntVector(const std::string& lrName)
 std::vector<float> Settings::getFloatVector(const std::string& lrName)
 {
 	return SettingsManager::instance().getFloatVector(lrName);
+}
+
+//------------------------------------------------------------------------------
+
+std::vector<std::string> Settings::getStringVector(const std::string& lrName)
+{
+	return SettingsManager::instance().getStringVector(lrName);
 }
 
 //------------------------------------------------------------------------------

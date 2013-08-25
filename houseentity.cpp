@@ -14,7 +14,6 @@
 HouseEntity::HouseEntity(float lX, float lY) :
 	CollidableEntity(lX, lY)
 {
-	setTexture(gTextureManager.load("data/house1-128.jpg"));
 }
 
 //------------------------------------------------------------------------------
