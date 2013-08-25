@@ -44,6 +44,9 @@ public:
 	void setVelY(float lVelY) { mVelY = lVelY; }
 	void setVel(float lVelX, float lVelY) { mVelX = lVelX; mVelY = lVelY; }
 	
+	void getSpeedAndDir(float* lpSpeedOut, float* lpDirRadOut) const;
+	float speed() const;
+	
 	float width() const			{ return mWidth; }
 	float height() const		{ return mHeight; }
 	float halfWidth() const		{ return mWidth * 0.5f; }

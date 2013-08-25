@@ -28,8 +28,9 @@ public:
 	
 	void setTexture(Texture* lpTexture);
 	
-	float rotation() const { return mRotationRad; }
-	void setRotation(float lRotation) { mRotationRad = lRotation; }
+	float rotationRad() const { return mRotationRad; }
+	void setRotationRad(float lRotation) { mRotationRad = lRotation; }
+	float fixedRotationRad() const;
 	
 	void setBlendEnabled(bool lEnabled) { mBlendEnabled = lEnabled; }
 	void setBehindCamera(bool lBehind) { mBehindCamera = lBehind; }

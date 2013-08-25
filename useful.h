@@ -71,9 +71,12 @@ void setSurfaceToGradient(SDL_Surface* lpSurface, float lLoopFactor);
 template <typename Type> Type min(Type lVal1, Type lVal2)				{ return lVal1 < lVal2 ? lVal1 : lVal2; }
 template <typename Type> Type max(Type lVal1, Type lVal2)				{ return lVal1 > lVal2 ? lVal1 : lVal2; }
 template <typename Type> Type clamp(Type lVal, Type lMin, Type lMax)	{ return max(lMin, min(lVal, lMax)); }
+template <typename Type> Type sign(Type lVal)							{ return lVal >= Type(0) ? Type(1) : Type(-1); }
 
 void getPolarFromRect(float lX, float lY, float* lpMagOut, float* lpAngleRadOut);
 void getRectFromPolar(float lMag, float lAngleRad, float* lpXOut, float* lpYOut);
+void testPolarFromRect(float lX, float lY);			//
+void testRectFromPolar(float lMag, float lAngRad);	// internal testing
 
 //------------------------------------------------------------------------------
 

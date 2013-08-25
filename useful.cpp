@@ -237,3 +237,21 @@ void getRectFromPolar(float lMag, float lAngleRad, float *lpXOut, float *lpYOut)
 }
 
 //------------------------------------------------------------------------------
+
+void testPolarFromRect(float lX, float lY)
+{
+	float lMag, lAngRad;
+	getPolarFromRect(lX, lY, &lMag, &lAngRad);
+	printf("rect (%.3f, %.3f) = polar mag %.3f at %.3f rad\n", lX, lY, lMag, lAngRad);
+}
+
+//------------------------------------------------------------------------------
+
+void testRectFromPolar(float lMag, float lAngRad)
+{
+	float lX, lY;
+	getRectFromPolar(lMag, lAngRad, &lX, &lY);
+	printf("polar mag %.3f at %5.3f rad = rect (%.3f, %.3f)\n", lMag, lAngRad, lX, lY);
+}
+
+//------------------------------------------------------------------------------

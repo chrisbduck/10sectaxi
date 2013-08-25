@@ -213,10 +213,17 @@ void Application::render() const
 	//gFontManager.renderInWorld("This moves", 50.0f, 50.0f, { 0xFF, 0x80, 0, 0xFF });
 	//gFontManager.renderOnScreen("This doesn't", 200.0f, 200.0f, { 0xFF, 0, 0, 0xFF }, FontManager::kAlignLeft);
 	
+	SDL_Colour kWhite = { 0xFF, 0xFF, 0xFF, 0xFF };
+	SDL_Colour kOrange = { 0xFF, 0x80, 0, 0xFF };
+	
 	char lTextBuf[16];
 	snprintf(lTextBuf, sizeof(lTextBuf), "FPS: %.1f", gVideo.approxFPS());
-	gFontManager.renderOnScreen(lTextBuf, -10.0f, -10.0f, { 0xFF, 0xFF, 0xFF, 0xFF }, FontManager::kAlignRight,
-								FontManager::kAlignBottom);
+	gFontManager.renderOnScreen(lTextBuf, -10.0f, -10.0f, kWhite, FontManager::kAlignRight, FontManager::kAlignBottom);
+	
+	snprintf(lTextBuf, sizeof(lTextBuf), "Spd: %.1f", gpPlayer->speed());
+	gFontManager.renderOnScreen(lTextBuf, 10.0f, -10.0f, kOrange, FontManager::kAlignLeft, FontManager::kAlignBottom);
+	snprintf(lTextBuf, sizeof(lTextBuf), "Dir: %.1f", gpPlayer->rotationRad());
+	gFontManager.renderOnScreen(lTextBuf, 140.0f, -10.0f, kOrange, FontManager::kAlignLeft, FontManager::kAlignBottom);
 	
 	gVideo.flip();
 }

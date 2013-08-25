@@ -6,7 +6,9 @@
 
 #include "entity.h"
 
+#include "useful.h"
 #include <SDL/SDL_surface.h>
+#include <cmath>
 
 //------------------------------------------------------------------------------
 // Entity
@@ -28,6 +30,20 @@ void Entity::update(float lTimeDeltaSec)
 {
 	mX += mVelX * lTimeDeltaSec;
 	mY += mVelY * lTimeDeltaSec;
+}
+
+//------------------------------------------------------------------------------
+
+void Entity::getSpeedAndDir(float* lpSpeedOut, float* lpDirRadOut) const
+{
+	getPolarFromRect(mVelX, mVelY, lpSpeedOut, lpDirRadOut);
+}
+
+//------------------------------------------------------------------------------
+
+float Entity::speed() const
+{
+	return sqrtf(mVelX * mVelX + mVelY * mVelY);
 }
 
 //------------------------------------------------------------------------------

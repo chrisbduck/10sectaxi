@@ -22,4 +22,3 @@ Tasks:
 - Fix angles (introduce facing angle, independent of velocity)
 - Implement reversing
 - Collision
-- Fonts
