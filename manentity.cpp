@@ -29,6 +29,7 @@ ManEntity::ManEntity(float lX, float lY) :
 void ManEntity::triggerCollisionEvent()
 {
 	gApplication.addCash(5 + int(emscripten_random() * 6.0f));
+	gApplication.setStatusMessage("Please take me somewhere!");
 	kill();
 }
 

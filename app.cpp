@@ -56,7 +56,8 @@ Application::Application(const std::vector<std::string> &lrArgs) :
 	mAreaBottom(0.0f),
 	mpMusic(nullptr),
 	mpTestSound(nullptr),
-	mCash(0)
+	mCash(0),
+	mMsgDisplayTimeSec(0.0f)
 {
 	ASSERT(msInstance == nullptr);
 	msInstance = this;
@@ -218,6 +219,15 @@ void Application::addCash(int lAmount)
 
 //------------------------------------------------------------------------------
 
+void Application::setStatusMessage(const std::string &lrText)
+{
+	static const float kDisplayTimeSec = Settings::getFloat("general/msg_display_time_sec");
+	mStatusMsg = lrText;
+	mMsgDisplayTimeSec = kDisplayTimeSec;
+}
+
+//------------------------------------------------------------------------------
+
 void Application::processEvents()
 {
 	static bool sReturnHeld = false;
@@ -260,6 +270,13 @@ void Application::update(float lTimeDeltaSec)
 	
 	gpCamera->updateFromPlayer(gpPlayer, mAreaLeft, mAreaTop, mAreaRight, mAreaBottom);
 	
+	if (mMsgDisplayTimeSec > 0.0f)
+	{
+		mMsgDisplayTimeSec -= lTimeDeltaSec;
+		if (mMsgDisplayTimeSec <= 0.0f)
+			mStatusMsg.clear();
+	}
+	
 	gVideo.update(lTimeDeltaSec);
 }
 
@@ -274,8 +291,9 @@ void Application::render() const
 	//gFontManager.renderInWorld("This moves", 50.0f, 50.0f, { 0xFF, 0x80, 0, 0xFF });
 	//gFontManager.renderOnScreen("This doesn't", 200.0f, 200.0f, { 0xFF, 0, 0, 0xFF }, FontManager::kAlignLeft);
 	
-	SDL_Colour kWhite = { 0xFF, 0xFF, 0xFF, 0xFF };
-	SDL_Colour kOrange = { 0xFF, 0x80, 0, 0xFF };
+	static const SDL_Colour kWhite = { 0xFF, 0xFF, 0xFF, 0xFF };
+	static const SDL_Colour kOrange = { 0xFF, 0x80, 0, 0xFF };
+	static const SDL_Colour kYellow = { 0xFF, 0xFF, 0, 0xFF };
 	
 	char lTextBuf[16];
 	snprintf(lTextBuf, sizeof(lTextBuf), "FPS: %.1f", gVideo.approxFPS());
@@ -288,6 +306,13 @@ void Application::render() const
 	
 	snprintf(lTextBuf, sizeof(lTextBuf), "$%d", mCash);	// TO DO: pounds or euros :)
 	gFontManager.renderOnScreen(lTextBuf, 10.0f, -10.0f, kOrange, FontManager::kAlignLeft, FontManager::kAlignBottom);
+	
+	static const float kScreenWidth = Settings::getFloat("screen/width");
+	//static const float kScreenHeight = Settings::getFloat("screen/height");
+	
+	if (!mStatusMsg.empty())
+		gFontManager.renderOnScreen(mStatusMsg.c_str(), kScreenWidth * 0.5f, -10.0f, kYellow, FontManager::kAlignXCentre,
+									FontManager::kAlignBottom);
 	
 	gVideo.flip();
 }

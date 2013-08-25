@@ -16,6 +16,8 @@ class ManEntity : public CollidableEntity
 public:
 	ManEntity(float lX, float lY);
 	
+	virtual const char* type() const { return "man"; }
+	
 	virtual void triggerCollisionEvent();
 };
 

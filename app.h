@@ -43,6 +43,8 @@ public:
 	
 	void addCash(int lAmount);
 	
+	void setStatusMessage(const std::string& lrText);
+	
 private:
 	
 	void processEvents();
@@ -71,6 +73,9 @@ private:
 	Music* mpMusic;
 	Sound* mpTestSound;
 	int mCash;
+	
+	std::string mStatusMsg;
+	float mMsgDisplayTimeSec;
 	
 };
 
