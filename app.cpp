@@ -43,6 +43,8 @@ extern "C" {
 
 Application* Application::msInstance = nullptr;
 
+bool gDebug = false;
+
 //------------------------------------------------------------------------------
 
 Application::Application(const std::vector<std::string> &lrArgs) :
@@ -127,12 +129,9 @@ bool Application::init()
 	
 	// Init audio if possible; we can cope without it if needed, though
 	gAudioManager.init();
-	mpMusic = gAudioManager.loadMusic("data/test_music.ogg");
+	mpMusic = gAudioManager.loadMusic("data/music/" + Settings::getString("sound/music"));
 	if (page_isMusicEnabled())
 		mpMusic->play();
-	
-	//mpTestSound = gAudioManager.loadSound("data/test_sfx.ogg");
-	//mpTestSound->play();
 	
 	initBackground(kDisplayWidth, kDisplayHeight);
 	initObjects();
@@ -314,8 +313,12 @@ void Application::render() const
 	static const SDL_Colour kRed = { 0xFF, 0x40, 0x40, 0xFF };
 	
 	char lTextBuf[16];
-	snprintf(lTextBuf, sizeof(lTextBuf), "FPS: %.1f", gVideo.approxFPS());
-	gFontManager.renderOnScreen(lTextBuf, -10.0f, -30.0f, kWhite, FontManager::kAlignRight, FontManager::kAlignBottom);
+	
+	if (gDebug)
+	{
+		snprintf(lTextBuf, sizeof(lTextBuf), "FPS: %.1f", gVideo.approxFPS());
+		gFontManager.renderOnScreen(lTextBuf, -10.0f, -30.0f, kWhite, FontManager::kAlignRight, FontManager::kAlignBottom);
+	}
 	
 	if (mCountdownSec > 0.0f)
 	{

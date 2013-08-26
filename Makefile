@@ -58,4 +58,4 @@ debug: CXXFLAGS += -g
 
 release: main
 	python release-fixer.py $(TARGET) $(PAGE_FUNCS)
-release: CXXFLAGS += -O2 -s DISABLE_EXCEPTION_CATCHING=1
+release: CXXFLAGS += -O3 -s DISABLE_EXCEPTION_CATCHING=1

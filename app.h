@@ -99,6 +99,8 @@ private:
 
 #define gApplication Application::instance()
 
+extern bool gDebug;
+
 //------------------------------------------------------------------------------
 
 #endif // APP_H
