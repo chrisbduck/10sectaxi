@@ -77,6 +77,8 @@ public:
 	
 	virtual const char* type() const { return "collidable"; }
 	
+	virtual void update(float lTimeDeltaSec);
+	
 	bool checkCollisionWith(CollidableEntity* lpOther);
 	bool usesCircleCollisions() const { return mUsesCircleCollisions; }
 	virtual float bounceFactor() const;
@@ -93,6 +95,7 @@ protected:
 private:
 	bool mUsesCircleCollisions;
 	bool mCollisionTriggersEvent;
+	float mSoundDelaySec;
 };
 
 //------------------------------------------------------------------------------

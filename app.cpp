@@ -388,6 +388,7 @@ void Application::losePassenger()
 	mpCurrentTarget->kill();
 	mpCurrentTarget = nullptr;
 	stopCountdown();
+	playSound("lose", 3);
 }
 
 //------------------------------------------------------------------------------
@@ -403,6 +404,16 @@ void Application::winPassenger(int lCashValue)
 	addCash(lCashValue);
 	stopCountdown();
 	setCurrentTarget(nullptr);	// killed already
+	playSound("win", 3);
+}
+
+//------------------------------------------------------------------------------
+
+void Application::playSound(const std::string &lrName, int lMaxNum)
+{
+	int lIndex = 1 + emscripten_random() * float(lMaxNum);
+	std::string lFileName = (std::ostringstream() << "data/sfx/" << lrName << lIndex << ".ogg").str();
+	gAudioManager.loadSound(lFileName)->play();
 }
 
 //------------------------------------------------------------------------------

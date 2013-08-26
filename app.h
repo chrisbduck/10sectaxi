@@ -57,6 +57,8 @@ public:
 	void winPassenger(int lCashValue);
 	void setCurrentTarget(TargetEntity* lpTarget) { mpCurrentTarget = lpTarget; }
 	
+	void playSound(const std::string& lrName, int lMaxNum);
+	
 private:
 	
 	void processEvents();

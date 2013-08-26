@@ -48,6 +48,8 @@ void ManEntity::triggerCollisionEvent()
 	gApplication.setCurrentTarget(lpTarget);
 	gApplication.startCountdown();
 	
+	gApplication.playSound("collect", 3);
+	
 	kill();
 }
 

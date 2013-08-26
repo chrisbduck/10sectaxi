@@ -6,6 +6,7 @@
 
 #include "spriteentity.h"
 
+#include "app.h"
 #include "camera.h"
 #include "settings.h"
 #include "texturemanager.h"
@@ -186,7 +187,8 @@ float SpriteEntity::fixedRotationRad() const
 CollidableEntity::CollidableEntity(float lX, float lY) :
 	SpriteEntity(lX, lY),
 	mUsesCircleCollisions(false),
-	mCollisionTriggersEvent(false)
+	mCollisionTriggersEvent(false),
+	mSoundDelaySec(0.0f)
 {
 }
 
@@ -289,6 +291,19 @@ bool CollidableEntity::checkCollisionWith(CollidableEntity* lpOther)
 		return true;
 	}
 	
+	if (mSoundDelaySec <= 0.0f)
+	{
+		static const float kCrashSoundThreshold = Settings::getFloat("sound/crash_sound_threshold");
+		static const float kCrashSoundDelaySec = Settings::getFloat("sound/crash_sound_delay_sec");
+		
+		float lVelMagSq = velX() * velX() + velY() * velY();
+		if (lVelMagSq >= kCrashSoundThreshold * kCrashSoundThreshold)
+		{
+			gApplication.playSound("crash", 9);
+			mSoundDelaySec = kCrashSoundDelaySec;
+		}
+	}
+	
 	float lBounceFactor = bounceFactor() * lpOther->bounceFactor();
 	
 	// Work out which is the nearest edge
@@ -373,6 +388,16 @@ bool CollidableEntity::checkCollisionWith(CollidableEntity* lpOther)
 	
 	
 	return true;
+}
+
+//------------------------------------------------------------------------------
+
+void CollidableEntity::update(float lTimeDeltaSec)
+{
+	if (mSoundDelaySec >= 0.0f)
+		mSoundDelaySec -= lTimeDeltaSec;
+	
+	SpriteEntity::update(lTimeDeltaSec);
 }
 
 //------------------------------------------------------------------------------
