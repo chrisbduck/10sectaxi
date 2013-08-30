@@ -136,6 +136,8 @@ bool Application::init()
 	if (page_isMusicEnabled())
 		mpMusic->play();
 	
+	gDebug = page_isDebugEnabled();
+	
 	initBackground(kDisplayWidth, kDisplayHeight);
 	initObjects();
 	

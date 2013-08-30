@@ -74,6 +74,9 @@ void CarEntity::update(float lTimeDeltaSec)
 	if (mReversing)
 		std::swap(lEffectiveAccelCtrl, lEffectiveBrakeCtrl);
 	
+	//printf("Accel %.1f, brake %.1f, %s; current speed %.1f facing / %.1f tang\n",
+	//	   lEffectiveAccelCtrl, lEffectiveBrakeCtrl, mReversing ? "rev" : "fwd", lFacingSpeed, lTangSpeed);
+	
 	static const float kSteerRadsPerSecLow		= Settings::getFloat("handling/steer_rads_per_sec_low");
 	static const float kSteerRadsPerSecHigh		= Settings::getFloat("handling/steer_rads_per_sec_high");
 	static const float kLowThreshold			= Settings::getFloat("handling/low_threshold");
@@ -111,8 +114,9 @@ void CarEntity::update(float lTimeDeltaSec)
 	}
 	else if (lEffectiveBrakeCtrl > 0.0f)
 	{
+		float lSign = sign(lFacingSpeed);
 		float lBrakeMag = lTimeDeltaSec * kBrakePerSec * lEffectiveBrakeCtrl;
-		lFacingSpeed = max(lFacingSpeed - lBrakeMag, 0.0f);
+		lFacingSpeed = max(fabsf(lFacingSpeed) - lBrakeMag, 0.0f) * lSign;
 	}
 	// Apply in-line drag if moving
 	else if (!floatApproxEquals(lFacingSpeed, 0.0f))
