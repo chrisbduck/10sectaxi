@@ -27,9 +27,11 @@ protected:
 	void enforceBoundaries();
 	void checkCollisions();
 	
-	float mSteerCtrl;	// <0 => left; >0 => right
-	float mAccelCtrl;	// >0 => accelerate; <0 => brake/reverse accelerate
-	float mLastAngle;	// last recorded velocity angle for the car
+	float mSteerCtrl;			// <0 => left; >0 => right
+	float mAccelCtrl;			// >0 => accelerate; <0 => brake/reverse accelerate
+	float mLastAngle;			// last recorded velocity angle for the car
+	bool  mReversing;			// true while in reverse
+	float mSwitchDirTimeSec;	// time while holding the key to switch from forward to reverse, or vice versa
 };
 
 //------------------------------------------------------------------------------

@@ -18,7 +18,10 @@
 CarEntity::CarEntity(float lX, float lY, const std::string& lrColour) :
 	CollidableEntity(lX, lY),
 	mSteerCtrl(0.0f),
-	mAccelCtrl(0.0f)
+	mAccelCtrl(0.0f),
+	mLastAngle(0.0f),
+	mReversing(false),
+	mSwitchDirTimeSec(0.0f)
 {
 	setTexture(gTextureManager.load("data/tex/" + lrColour + "-car.png"));
 	//setRotationStartsFromUp(true);
@@ -42,12 +45,34 @@ void CarEntity::update(float lTimeDeltaSec)
 	getRectFromPolar(1.0f, lFacingAngleRad + M_PI_OVER_2, &lTangXNorm, &lTangYNorm);
 	float lTangSpeed = velX() * lTangXNorm + velY() * lTangYNorm;
 	
+	float lEffectiveAccelCtrl = max( mAccelCtrl, 0.0f);		// [0, 1]
+	float lEffectiveBrakeCtrl = max(-mAccelCtrl, 0.0f);		// [0, 1] - so positive when braking
+	
 	bool lMoving = true;
+	bool lSwitching = false;
 	if (floatApproxEquals(lVelMag, 0.0f))
 	{
 		lVelAngleRad = lFacingAngleRad;			// use previous rotation
 		lMoving = false;
+		if ((!mReversing && mAccelCtrl < 0.0f) || (mReversing && mAccelCtrl > 0.0f))
+		{
+			mSwitchDirTimeSec += lTimeDeltaSec;
+			static const float kAutoreverseHoldTimeSec = Settings::getFloat("handling/autoreverse_hold_time_sec");
+			if (mSwitchDirTimeSec >= kAutoreverseHoldTimeSec)
+			{
+				mReversing = !mReversing;
+				mSwitchDirTimeSec = 0.0f;
+			}
+			lEffectiveAccelCtrl = 0.0f;
+			lEffectiveBrakeCtrl = 0.0f;
+			lSwitching = true;
+		}
 	}
+	if (!lSwitching)
+		mSwitchDirTimeSec = 0.0f;
+	
+	if (mReversing)
+		std::swap(lEffectiveAccelCtrl, lEffectiveBrakeCtrl);
 	
 	static const float kSteerRadsPerSecLow		= Settings::getFloat("handling/steer_rads_per_sec_low");
 	static const float kSteerRadsPerSecHigh		= Settings::getFloat("handling/steer_rads_per_sec_high");
@@ -76,29 +101,31 @@ void CarEntity::update(float lTimeDeltaSec)
 	}
 	
 	// Acceleration
-	if (mAccelCtrl != 0.0f)
+	if (lEffectiveAccelCtrl > 0.0f)
 	{
 		float lAccelPerSec = lerp(lLowHighFactor, kAccelPerSecLow, kAccelPerSecHigh);
-		if (mAccelCtrl > 0.0f)
-		{
-			float lAccelMag = lTimeDeltaSec * lAccelPerSec * mAccelCtrl;
-			lFacingSpeed += lAccelMag;
-		}
-		else	// <0
-		{
-			float lBrakeMag = lTimeDeltaSec * kBrakePerSec * -mAccelCtrl;
-			lFacingSpeed = max(lFacingSpeed - lBrakeMag, 0.0f);
-		}
+		float lAccelMag = lTimeDeltaSec * lAccelPerSec * lEffectiveAccelCtrl;
+		if (mReversing)
+			lAccelMag = -lAccelMag;
+		lFacingSpeed += lAccelMag;
+	}
+	else if (lEffectiveBrakeCtrl > 0.0f)
+	{
+		float lBrakeMag = lTimeDeltaSec * kBrakePerSec * lEffectiveBrakeCtrl;
+		lFacingSpeed = max(lFacingSpeed - lBrakeMag, 0.0f);
 	}
 	// Apply in-line drag if moving
 	else if (!floatApproxEquals(lFacingSpeed, 0.0f))
-		lFacingSpeed = max(lFacingSpeed - lTimeDeltaSec * kNoAccelSlowing, 0.0f);
+	{
+		float lSign = sign(lFacingSpeed);
+		lFacingSpeed = max(fabsf(lFacingSpeed) - lTimeDeltaSec * kNoAccelSlowing, 0.0f) * lSign;
+	}
 	
 	// Apply tangential drag
 	if (!floatApproxEquals(lTangSpeed, 0.0f))
 	{
 		float lGripFactor = kGrip;
-		if (mAccelCtrl < 0.0f)
+		if (lEffectiveBrakeCtrl < 0.0f)
 			lGripFactor *= kGripFactorWhenBraking;
 		lTangSpeed = max(lTangSpeed - lTimeDeltaSec * lGripFactor * kBrakePerSec, 0.0f);
 	}
