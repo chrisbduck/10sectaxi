@@ -64,6 +64,7 @@ Application::Application(const std::vector<std::string> &lrArgs) :
 	mCountdownSec(0.0f),
 	mpCurrentHouse(nullptr),
 	mpCurrentTarget(nullptr),
+	mpArrow(nullptr),
 	mMsgDisplayTimeSec(0.0f)
 {
 	ASSERT(msInstance == nullptr);
@@ -213,6 +214,12 @@ void Application::initObjects()
 		
 		gEntityManager.registerEntity(lpNewMan);
 	}
+	
+	mpArrow = new SpriteEntity(0.0f, 0.0f);
+	mpArrow->setTexture(gTextureManager.load("data/tex/arrow.png"));
+	mpArrow->setVisible(false);
+	mpArrow->setBehindCamera(true);
+	gEntityManager.registerEntity(mpArrow);
 }
 
 //------------------------------------------------------------------------------
@@ -294,6 +301,8 @@ void Application::update(float lTimeDeltaSec)
 		if (mCountdownSec <= 0.0f)
 			losePassenger();
 	}
+	
+	updateArrow();
 	
 	gVideo.update(lTimeDeltaSec);
 }
@@ -410,6 +419,34 @@ void Application::winPassenger(int lCashValue)
 	stopCountdown();
 	setCurrentTarget(nullptr);	// killed already
 	playSound("win", 3);
+}
+
+//------------------------------------------------------------------------------
+
+void Application::updateArrow()
+{
+	bool lShowArrow = mpCurrentTarget != nullptr && !gpCamera->canSee(mpCurrentTarget);
+	mpArrow->setVisible(lShowArrow);
+	if (!lShowArrow)
+		return;
+	
+	float lOffsetX = mpCurrentTarget->x() - gpCamera->x();
+	float lOffsetY = mpCurrentTarget->y() - gpCamera->y();
+	// Push the largest offset to the edge, and then the other one will be an appropriate fraction of it
+	float lFactor = 1.0f / max(fabsf(lOffsetX), fabsf(lOffsetY));
+	float lOffsetXFactor = lOffsetX * lFactor;
+	float lOffsetYFactor = lOffsetY * lFactor;
+	
+	float lRotationRad, lUnused;
+	getPolarFromRect(lOffsetX, lOffsetY, &lUnused, &lRotationRad);
+	
+	static const float kHalfDisplayWidth = Settings::getFloat("screen/width") * 0.5f;
+	static const float kHalfDisplayHeight = Settings::getFloat("screen/height") * 0.5f;
+	float lOffsetWidth = kHalfDisplayWidth - mpArrow->halfWidth();
+	float lOffsetHeight = kHalfDisplayHeight - mpArrow->halfHeight();
+	mpArrow->setPos(kHalfDisplayWidth  + lOffsetXFactor * lOffsetWidth,
+					kHalfDisplayHeight + lOffsetYFactor * lOffsetHeight);
+	mpArrow->setRotationRad(lRotationRad);
 }
 
 //------------------------------------------------------------------------------

@@ -53,7 +53,8 @@ SpriteEntity::SpriteEntity(float lX, float lY) :
 	mRotationRad(0.0f),
 	mRotationStartsFromUp(false),
 	mBlendEnabled(true),
-	mBehindCamera(false)
+	mBehindCamera(false),
+	mVisible(true)
 {
 	for (int lIndex = 0; lIndex < sizeof(mColour) / sizeof(float); ++lIndex)
 		mColour[lIndex] = 1.0f;
@@ -115,6 +116,9 @@ void SpriteEntity::setTexture(Texture* lpTexture)
 
 void SpriteEntity::render() const
 {
+	if (!mVisible)
+		return;
+	
 	Entity::render();
 	
 	if (msShaderProg == 0)

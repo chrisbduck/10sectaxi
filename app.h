@@ -17,6 +17,7 @@
 class Music;
 class HouseEntity;
 class Sound;
+class SpriteEntity;
 class TargetEntity;
 class Texture;
 
@@ -72,6 +73,7 @@ private:
 	void initBackground(float lDisplayWidth, float lDisplayHeight);
 	void initObjects();
 	void runMainLoopIteration();
+	void updateArrow();
 	
 	
 	static Application* msInstance;
@@ -91,6 +93,7 @@ private:
 	float mCountdownSec;
 	HouseEntity* mpCurrentHouse;
 	TargetEntity* mpCurrentTarget;
+	SpriteEntity* mpArrow;
 	
 	std::string mStatusMsg;
 	std::string mStatusMsg2;

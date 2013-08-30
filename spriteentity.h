@@ -41,6 +41,9 @@ public:
 	void setBlendEnabled(bool lEnabled)						{ mBlendEnabled = lEnabled; }
 	void setBehindCamera(bool lBehind)						{ mBehindCamera = lBehind; }
 	
+	bool isVisible() const									{ return mVisible; }
+	void setVisible(bool lVisible)							{ mVisible = lVisible; }
+	
 protected:
 	void setRotationStartsFromUp(bool lEnabled)				{ mRotationStartsFromUp = lEnabled; }	// for car sprite, etc
 	
@@ -55,6 +58,7 @@ private:
 	bool mRotationStartsFromUp;
 	bool mBlendEnabled;
 	bool mBehindCamera;			// the sprite's position is only affected by camera movement if this is false
+	bool mVisible;
 	
 	// All sprites are rendered using a common set of vertex positions and UVs, and a set shader programme
 	static bool msStaticInitDone;
