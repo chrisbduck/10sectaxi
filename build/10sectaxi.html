@@ -13,7 +13,7 @@
       canvas.emscripten { border: 0px none; }
     </style>
   </head>
-  <body>
+  <body onload="_page_onBodyLoad()">
     <hr/>
     <div class="emscripten" id="status">Downloading...</div>
     <div class="emscripten">
@@ -25,6 +25,7 @@
     <hr/>
     <div class="emscripten">
       <input type="checkbox" id="music" checked="true" onclick="_app_toggleMusic()">Music
+      <input type="checkbox" id="debug" onclick="_app_toggleDebug(); _page_updateDebug()">Debug log
       <input type="checkbox" id="resize">Resize canvas
       <input type="checkbox" id="pointerLock" checked>Lock/hide mouse pointer
       &nbsp;&nbsp;&nbsp;

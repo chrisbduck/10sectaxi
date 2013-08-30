@@ -34,8 +34,8 @@ ALLTARGETS += $(PRELOAD_FILE) $(PRELOAD_SCRIPT)
 $(OBJDIR)/%.bc: %.cpp %.h
 	emcc $(CXXFLAGS) -o $@ $<
 
-EXPORT_FUNCS := "['_main', '_malloc', '_app_toggleMusic']"
-PAGE_FUNCS := _page_toggleMusic _page_isMusicEnabled
+EXPORT_FUNCS := "['_main', '_malloc', '_app_toggleMusic', '_app_toggleDebug']"
+PAGE_FUNCS := _page_toggleMusic _page_isMusicEnabled _page_toggleDebug _page_isDebugEnabled
 JS_LIB = $(BUILDDIR)/page-fns.js
 
 $(TARGET): $(OBJS) | $(JS_LIB)

@@ -35,6 +35,8 @@
 extern "C" {
 	extern void page_toggleMusic();
 	extern bool page_isMusicEnabled();
+	extern void page_toggleDebug();
+	extern bool page_isDebugEnabled();
 }
 
 //------------------------------------------------------------------------------
@@ -478,6 +480,15 @@ void Application::toggleMusic(PageUpdateType lUpdate)
 }
 
 //------------------------------------------------------------------------------
+
+void Application::toggleDebug(PageUpdateType lUpdate)
+{
+	gDebug = !gDebug;
+	if (lUpdate == UpdatePage)
+		page_toggleDebug();
+}
+
+//------------------------------------------------------------------------------
 // Main function
 //------------------------------------------------------------------------------
 
@@ -498,6 +509,13 @@ extern "C"
 	void app_toggleMusic()
 	{
 		Application::instance().toggleMusic(Application::DoNotUpdatePage);
+	}
+	
+	//------------------------------------------------------------------------------
+	
+	void app_toggleDebug()
+	{
+		Application::instance().toggleDebug(Application::DoNotUpdatePage);
 	}
 }
 

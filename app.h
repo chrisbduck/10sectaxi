@@ -37,6 +37,7 @@ public:
 	
 	enum PageUpdateType { UpdatePage, DoNotUpdatePage };
 	void toggleMusic(PageUpdateType lUpdate);
+	void toggleDebug(PageUpdateType lUpdate);
 	
 	float areaLeft() const { return mAreaLeft; }
 	float areaRight() const { return mAreaRight; }
